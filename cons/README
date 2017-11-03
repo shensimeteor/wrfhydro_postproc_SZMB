@@ -1,0 +1,8 @@
+nodeidx_GuanLan.txt, nodeidx_TieGang.txt:
+   channel node index (starting with 0) of GuanLan area & TieGang area. used to plot static plots & streamflow plots
+TG_channode_lonlat.txt, GL_channode_lonlat.txt:
+   channel node lon/lat of GuanLan area & TieGang area. may used to plot markers for precp/tiles plots
+TG_basinborder_lonlat.txt, TG_lakeborder_lonlat.txt:
+   basin/lake border lon/lat of TieGang. may used to plot markers for precp/tiles plots
+
+
