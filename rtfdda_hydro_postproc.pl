@@ -45,6 +45,7 @@ system("date");
 print("cycle: $THIS_CYCLE\n");
 print("hydro_root: $HYDRO_ROOT\n");
 print("workdir: $workdir\n");
+print("\n");
 
 #wait for hydro files
 #1). wait for hydro cycle dir
@@ -56,6 +57,7 @@ if ($flag =~ /Fail/){
 #2). wait for 20* file finished
 $finaldate=&tool_date12_add("${THIS_CYCLE}00", 24, "hour");
 &wait_hydro_run($CYCLE_DIR, $finaldate, 12, 30);
+print("\n");
 
 #cp to workdir
 system("test -d $workdir/cycledata || mkdir -p $workdir/cycledata");
@@ -67,6 +69,13 @@ if ( -e "$workdir/cycledata/flag.copy") {
     system("ln -sf $CYCLE_DIR/forcing .");
     system("cp -r $CYCLE_DIR/20* $workdir/cycledata/ && touch $workdir/cycledata/flag.copy");
 }
+print("\n");
+
+#link 6hr to cycles
+$cmd="bash script/link_6hr_atmos_png_forcycle.sh $WEB_DIR $THIS_CYCLE -6";
+print($cmd."\n");
+system($cmd);
+print("\n");
 
 #plot
 #@plots=("precp", "tiles", "evapor", "streamflow_TG", "streamflow_SZ", "streamflow_GL", "streamflow_D4", "timeseries");
@@ -74,27 +83,32 @@ if ( -e "$workdir/cycledata/flag.copy") {
 for $plot (@plots) {
     print((/"plot: $plot"/));
     if($plot eq "precp") {
+        system("test -d $workdir/precp && rm -rf $workdir/precp");
         $cmd="bash $HYDRO_ROOT/script/run_plot_precp_SZMB_alldom.sh $HYDRO_ROOT $workdir/cycledata $workdir/precp $WEB_DIR $THIS_CYCLE >& $LOG_DIR/log.precp &";
         print($cmd."\n");
         system($cmd);
     }
     if($plot eq "tiles") {
+        system("test -d $workdir/tiles && rm -rf $workdir/tiles");
         $cmd="bash $HYDRO_ROOT/script/run_plot_tiles_SZMB_alldom.sh $HYDRO_ROOT $workdir/cycledata $workdir/tiles $WEB_DIR $THIS_CYCLE >& $LOG_DIR/log.tiles &";
         print($cmd."\n");
         system($cmd);
     }
     if($plot eq "evapor") {
-        $cmd="bash $HYDRO_ROOT/script/run_plot_evap_SZMB_alldom.sh $HYDRO_ROOT $workdir/cycledata $workdir/evapor $WEB_DIR $THIS_CYCLE >& $LOG_DIR/log.evapor &";
+        system("test -d $workdir/evapor && rm -rf $workdir/evapor");
+        $cmd="bash $HYDRO_ROOT/script/run_plot_evapor_SZMB_alldom.sh $HYDRO_ROOT $workdir/cycledata $workdir/evapor $WEB_DIR $THIS_CYCLE >& $LOG_DIR/log.evapor &";
         print($cmd."\n");
         system($cmd);
     }
     if($plot =~ /streamflow/){
         ($temp, $dom)=split(/_/, $plot);
+        system("test -d $workdir/streamflow/$dom && rm -rf $workdir/streamflow/$dom");
         $cmd="bash $HYDRO_ROOT/script/run_plot_streamflow_SZMB_$dom.sh $HYDRO_ROOT $workdir/cycledata $workdir/streamflow $WEB_DIR $THIS_CYCLE >& $LOG_DIR/log.streamflow_$dom &";
         print($cmd."\n");
         system($cmd);
     }
     if($plot eq "timeseries"){
+        system("test -d $workdir/timeseries && rm -rf $workdir/timeseries");
         $cmd="bash $HYDRO_ROOT/script/run_plot_TimeSeries_SZMB.sh $HYDRO_ROOT $workdir/cycledata $workdir/timeseries $WEB_DIR $THIS_CYCLE >& $LOG_DIR/log.timeseries &";
         print($cmd."\n");
         system($cmd);

@@ -39,6 +39,20 @@ function mydir(){
     echo $mydir
 }
 
+#cp gifs/<cycle_date>/<TS>.png gifs/<1-24hour forecast_date>/<TS>.png
+function cp_gifs(){
+    gifdir=$1
+    cycle=$2
+    fcstlen=$3
+    for((i=1; i<=$fcstlen; i++)); do
+        $datex=$(date_add $cycle $i "hour")
+        if [ -d $gifdir/$datex ]; then
+            cp *png $gifdir/$datex
+        fi
+    done
+}
+    
+
 this_dir=$(mydir $(pwd) $0)
 source $this_dir/datelib.sh
 ln -sf $cycledir/*.CHRTOUT_DOMAIN1 .
@@ -61,5 +75,4 @@ cmd="ncl plot_TGfixed_streamflow_contaccu.ncl 'file_pattern=\"*.CHRTOUT_DOMAIN1\
 echo "$cmd"
 bash -c "$cmd"
 
-
-
+cp_gifs $webdir/gifs $cycle 24

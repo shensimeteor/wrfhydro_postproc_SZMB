@@ -21,6 +21,7 @@ begin
     new_name=fts(1)+"_"+fts(0)+"."+ff
     new_dir=dir+"/"+fts(4)
     system("test -d "+new_dir+" || mkdir -p "+new_dir)
+    system("test -e "+new_dir+"/"+new_name+" && rm -rf "+new_dir+"/"+new_name)
     print("cp "+orgin_file+" "+new_dir+"/"+new_name)
     system("cp "+orgin_file+" "+new_dir+"/"+new_name)
 end

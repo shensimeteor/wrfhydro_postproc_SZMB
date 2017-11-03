@@ -57,7 +57,7 @@ for png in $(ls ../before_overlay/*.png); do
     pngtitle=$(basename $png .png)
     convert -gravity south background.png inter.png -composite inter2.png
     convert -append inter2.png legend.png GE_${pngtitle}.png
-    datx=$(echo $png | cut -d "_" -f 5)
+    datx=$(echo $pngtitle | cut -d "_" -f 5)
     test -d "$webdir/cycles/$cycle/$datx" || mkdir -p "$webdir/cycles/$cycle/$datx" 
     echo cp GE_${pngtitle}.png $webdir/cycles/$cycle/$datx/TG_Streamflow.png
     cp GE_${pngtitle}.png $webdir/cycles/$cycle/$datx/TG_Streamflow.png

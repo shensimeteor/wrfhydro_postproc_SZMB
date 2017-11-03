@@ -362,8 +362,7 @@ xleg = (/0.55,0.55,0.55,0.55,0.55, 0.65,0.65,0.65,0.65,0.65/)
   print("end frame")
   delete(wks)
   
-  convert_and_copyout(fig_name+".png", copydirs) 
-;  system("rm -f "+fig_name+".ps")
+  convert_and_copyout_forStreamflow(fig_name+".png", copydirs) 
 
   end do
 

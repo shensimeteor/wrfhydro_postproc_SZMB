@@ -39,6 +39,8 @@ begin
             continue
         end if
         print((/"cp "+arr_dir_copyout(i)/))
+        system("test -d "+arr_dir_copyout(i)+"/"+cycle+" || mkdir -p "+arr_dir_copyout(i)+"/"+cycle)
+        system("test -e "+arr_dir_copyout(i)+"/"+cycle+"/"+new_name+" && rm -rf "+arr_dir_copyout(i)+"/"+cycle+"/"+new_name)
         system((/"cp "+new_name+" "+arr_dir_copyout(i)+"/"+cycle/))
     end do
 end

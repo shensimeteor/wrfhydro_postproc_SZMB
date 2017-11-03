@@ -1,25 +1,5 @@
-;system specific
-undef("rename_and_copy")
-procedure rename_and_copy(orgin_file:string, dir:string)
-begin   
-    ft=systemfunc("basename "+orgin_file+" | cut -d . -f 1")
-    ff=systemfunc("basename "+orgin_file+" | cut -d . -f 2")
-    fts=str_split(ft, "_")
-    nft=dimsizes(fts)
-    if(nft .ne. 5) then
-        print((/"Error, fail to rename & copy "/))
-        print((/"ncl output figure should be named as: [VAR]_[DOM]_valid_at_[YYYYMMDDHH].[format]"/))
-        print((/"then figure will be renamed as [DOM]_[VAR].[format] and copied to dir/[YYYYMMDDHH]"/))
-        return
-    end if
-    new_name=fts(1)+"_"+fts(0)+"."+ff
-    new_dir=dir+"/"+fts(4)
-    system("test -d "+new_dir+" || mkdir -p "+new_dir)
-    system("cp "+orgin_file+" "+new_dir+"/"+new_name)
-end
-        
-undef("covert_and_copyout")
-procedure convert_and_copyout(figure_name, arr_dir_copyout)
+undef("covert_and_copyout_forStreamflow")
+procedure convert_and_copyout_forStreamflow(figure_name, arr_dir_copyout)
 local final_format, conveert, strs, nstr, file_exist, newstrs, renamed, i, new_name,ndir
 begin
 ;SZMB machine
@@ -49,18 +29,18 @@ begin
         system("mv "+renamed+" "+figure_name)
     end if
     return
-    ;b. do convert
-    strs(nstr-1) = final_format
-    new_name=str_join(strs, ".")
-;    print(convert+figure_name+" "+new_name)
-;    system(convert+figure_name+" "+new_name)
-    ;c. do copy
-    ndir=dimsizes(arr_dir_copyout)
-    do i=0,ndir-1
-        if(arr_dir_copyout(i) .eq. "") then
-            continue
-        end if
-        rename_and_copy(new_name, arr_dir_copyout(i))
-    end do
+;    ;b. do convert
+;    strs(nstr-1) = final_format
+;    new_name=str_join(strs, ".")
+;;    print(convert+figure_name+" "+new_name)
+;;    system(convert+figure_name+" "+new_name)
+;    ;c. do copy
+;    ndir=dimsizes(arr_dir_copyout)
+;    do i=0,ndir-1
+;        if(arr_dir_copyout(i) .eq. "") then
+;            continue
+;        end if
+;        rename_and_copy(new_name, arr_dir_copyout(i))
+;    end do
 end
 
