@@ -95,5 +95,6 @@ echo "$cmd"
 bash -c "$cmd"
 bash -c "$cmd"
 #rm -rf *LDASIN_DOMAIN1
+touch $webdir/cycles/$cycle/flag.hydro_added
 date
 

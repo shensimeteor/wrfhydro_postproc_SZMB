@@ -1,4 +1,4 @@
-#/usr/bin/perl
+#!/usr/bin/perl
 if (! $ARGV[0] || $ARGV[0] eq "--" || $ARGV[0] eq "-h") {
    print "rtfdda_hydro_postproc.pl  <-id GMID>  <-m MEMBER>  <-c cycle | -o offset_hr> \n";
    exit(-1);
@@ -46,7 +46,7 @@ print("cycle: $THIS_CYCLE\n");
 print("hydro_root: $HYDRO_ROOT\n");
 print("workdir: $workdir\n");
 print("\n");
-
+&clean_dir("/dev/shm/hydro_postproc/$JOB_ID/$MEM_NAME", 2);
 #wait for hydro files
 #1). wait for hydro cycle dir
 $flag=&tool_file_wait(60,60,($CYCLE_DIR));
@@ -72,14 +72,17 @@ if ( -e "$workdir/cycledata/flag.copy") {
 print("\n");
 
 #link 6hr to cycles
-$cmd="bash script/link_6hr_atmos_png_forcycle.sh $WEB_DIR $THIS_CYCLE -6";
+$cmd="bash $HYDRO_ROOT/script/link_6hr_atmos_png_forcycle.sh $WEB_DIR $THIS_CYCLE -6";
 print($cmd."\n");
 system($cmd);
 print("\n");
 
+#for Evapor (because it has no 24hour forecast), ln no_plots.gif there
+&copy_noplot_final_evapor($WEB_DIR, $THIS_CYCLE, ("d4", "d5", "TG", "GL"));
+
 #plot
-#@plots=("precp", "tiles", "evapor", "streamflow_TG", "streamflow_SZ", "streamflow_GL", "streamflow_D4", "timeseries");
-@plots=("precp", "tiles", "evapor", "streamflow_TG", "streamflow_GL", "timeseries");
+@plots=("precp", "tiles", "evapor", "streamflow_TG", "streamflow_SZ", "streamflow_GL", "streamflow_D4", "timeseries");
+#@plots=("precp", "tiles", "evapor", "streamflow_TG", "streamflow_GL", "timeseries");
 for $plot (@plots) {
     print((/"plot: $plot"/));
     if($plot eq "precp") {
@@ -135,7 +138,7 @@ sub wait_hydro_run(){
         sleep($wait_sec);
         @files=`ls $dir_hydro_run/*.RTOUT_DOMAIN1`;
         if ( scalar(@files) > 0){
-            sort @files;
+            @files=sort @files;
             $last=scalar(@files);
             $lastfilex=$files[$last-1];
             chomp $lastfilex;
@@ -146,10 +149,38 @@ sub wait_hydro_run(){
         }
     }
 }
+    
+#24 hour forcast has no evapor plots,link no_plots.gif to that
+sub copy_noplot_final_evapor{
+    my ($webdir, $cycle, @doms) = @_;
+    $date24=&tool_date12_add("${cycle}00", 24, "hour");
+    $date24=substr($date24, 0, 10);
+    $no_plots="$GMODDIR/ensproc/no_plots.gif";
+    for $dom (@doms) {
+        system("cd $webdir/cycles/$cycle/$date24 && ln -sf $no_plots ${dom}_Evapor.png");
+        system("cd $webdir/gifs/$date24 && ln -sf $no_plots ${dom}_Evapor.png");
+    }
+}
         
 
-        
-
+  sub clean_dir {
+        my ($cleandir, $nbfi) = @_;
+        if ( ! -d $cleandir) {
+            return;
+        }
+        @dclean = `ls -d $cleandir\/*20*`;
+        $numd = @dclean;
+        if ($numd > $nbfi ) {
+                $ndel = $numd - $nbfi ;
+                $ndel--;
+                @rdirs = @dclean[0 .. $ndel];
+                foreach  $rdir (@rdirs)  {
+                        chomp $rdir;
+                        system ("rm -rf $rdir");
+                }
+        }
+  }
+1;
 
 
 

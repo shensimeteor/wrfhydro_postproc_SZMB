@@ -1,0 +1,6 @@
+2017年 11月 06日 星期一 17:20:56 GMT
+cycle: 2017110608
+hydro_root: /data02/home/fddanew/data/GMODJOBS/GWRUPPS//hydro_postproc/
+workdir: /dev/shm/hydro_postproc/GWRUPPS/GFS_WCTRL/2017110608
+
+Error, /data02/home/fddanew/data/cycles/GWRUPPS/hydro/cycles/GFS_WCTRL/2017110608 not exist, fail to postproc 

@@ -28,7 +28,7 @@ test -d TG || mkdir -p TG
 cd TG
 test -d before_overlay || mkdir -p before_overlay
 cd before_overlay
-print "before_overlay"
+echo "before_overlay"
 $1/script/cpln_hydrofile_here.sh ${cycledir}/ CHRTOUT_DOMAIN1 ln $cycle -6 24
 #D4: 2250x2250: 1352x1324+449+408  ; 676x662+225+204 => 678x591
 #SZ: 2250x2250: 1352x920+449+609   ; 676x460+225+305 => 1080x625
@@ -45,6 +45,7 @@ ln -sf $scriptdir/convert_and_copyout_forStreamflow.ncl .
 ln -sf ${consdir}/nodeidx_*.txt .
 echo ncl 'srcfilename="??????????00.CHRTOUT_DOMAIN1"' 'colorbar_maxvalue=50' 'dom_name="TG"' 'nodeidx_file="nodeidx_TieGang.txt"' 'lonlat_list="113.843,113.936,22.595,22.7"' plot_streamflow_Customize_forTrans_noLegend2.ncl  
 ncl 'srcfilename="??????????00.CHRTOUT_DOMAIN1"' 'colorbar_maxvalue=50' 'dom_name="TG"' 'nodeidx_file="nodeidx_TieGang.txt"' 'lonlat_list="113.843,113.936,22.595,22.7"' plot_streamflow_Customize_forTrans_noLegend2.ncl &> log.plt
+bash $1/script/convert_ps_to_png_vianode30.sh *.ps 
 date
 cd ..
 echo "overlayGE &  cp to web"
@@ -62,6 +63,7 @@ for png in $(ls ../before_overlay/*.png); do
     echo cp GE_${pngtitle}.png $webdir/cycles/$cycle/$datx/TG_Streamflow.png
     cp GE_${pngtitle}.png $webdir/cycles/$cycle/$datx/TG_Streamflow.png
     test -d "$webdir/gifs/$datx" || mkdir -p "$webdir/gifs/$datx" 
+    test -e "$webdir/gifs/$datx/TG_Streamflow.png" && rm -rf "$webdir/gifs/$datx/TG_Streamflow.png"
     echo cp GE_${pngtitle}.png $webdir/gifs/$datx/TG_Streamflow.png
     cp GE_${pngtitle}.png $webdir/gifs/$datx/TG_Streamflow.png
     rm inter.png inter2.png

@@ -88,9 +88,9 @@ begin
 
 ; ===== plot map background =====
  fig_name="Streamflow_"+dom_name+"_valid_at_"+ymdh
- wks_type="png"
- wks_type@wkWidth=2250
- wks_type@wkHeight=2250
+ wks_type="ps"
+; wks_type@wkWidth=2250
+; wks_type@wkHeight=2250
  wks = gsn_open_wks(wks_type,fig_name)
 
   gsn_define_colormap(wks,"gsltod")
@@ -362,7 +362,7 @@ xleg = (/0.55,0.55,0.55,0.55,0.55, 0.65,0.65,0.65,0.65,0.65/)
   print("end frame")
   delete(wks)
   
-  convert_and_copyout_forStreamflow(fig_name+".png", copydirs) 
+;  convert_and_copyout_forStreamflow(fig_name+".png", copydirs) 
 
   end do
 

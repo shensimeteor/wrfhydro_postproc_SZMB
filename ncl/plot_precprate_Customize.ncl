@@ -261,14 +261,16 @@ begin
 ;    res@mpOutlineDrawOrder          = "PostDraw"
      res@mpOceanFillColor            = 5
      res@mpLandFillColor             = "transparent"
-     res@mpFillDrawOrder             = "PreDraw"
+;     res@mpFillDrawOrder             = "PreDraw"
      res@mpOutlineBoundarySets       = "National"
-     res@mpOutlineDrawOrder  = "PostDraw"
+;     res@mpOutlineDrawOrder  = "PostDraw"
 ;    res@mpOutlineSpecifiers = (/"China:states"/)
 ;    res@mpDataBaseVersion     = "MediumRes"          ; Default is LowRes
      res@mpDataBaseVersion     = "HighRes"          ; Default is LowRes
      res@mpGeophysicalLineThicknessF	= 1.5
      res@mpGeophysicalLineColor = "black"
+     res@mpOutlineOn=True 
+     
 
      res@mpGridLineDashPattern  = 2
      res@pmTickMarkDisplayMode  = "Always"

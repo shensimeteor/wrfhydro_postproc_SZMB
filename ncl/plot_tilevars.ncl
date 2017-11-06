@@ -247,7 +247,7 @@ begin
         res@mpOceanFillColor            = 5
         res@mpLandFillColor             = "transparent"
         res@mpFillDrawOrder             = "PreDraw"
-        if(dom_name .eq. "D4") then
+        if(dom_name .eq. "D4" .or. dom_name .eq. "SZ") then
             res@mpOutlineOn = "True"
         else
             res@mpOutlineOn = "False"

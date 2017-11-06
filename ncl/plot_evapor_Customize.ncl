@@ -259,6 +259,7 @@ begin
 
 
      res@mpFillOn                    = False
+     res@mpOutlineOn   = True
 ;    res@mpOutlineDrawOrder          = "PostDraw"
      res@mpOceanFillColor            = 5
      res@mpLandFillColor             = "transparent"

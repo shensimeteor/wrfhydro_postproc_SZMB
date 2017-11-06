@@ -45,7 +45,7 @@ function cp_gifs(){
     cycle=$2
     fcstlen=$3
     for((i=1; i<=$fcstlen; i++)); do
-        $datex=$(date_add $cycle $i "hour")
+        datex=$(date_add $cycle $i "hour")
         if [ -d $gifdir/$datex ]; then
             cp *png $gifdir/$datex
         fi
