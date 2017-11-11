@@ -116,7 +116,7 @@ begin
  
  ;vars_to_plot=(/"QSTRMVOLRT", "SFCHEADSUBRT", "QBDRYRT","ZWATTABLRT","SOIL_M 1", "SOIL_M 2", "SOIL_M 3", "SOIL_M 4", "soil_m_total"/)
  ;vars_to_plot=(/"SFCHEADSUBRT","soil_m_total","ZWATTABLRT", "SOIL_M 1", "SOIL_M 2", "SOIL_M 3", "SOIL_M 4"/)
- vars_to_plot=(/"SFCHEADSUBRT","SoilMTotal"/) 
+ vars_to_plot=(/"SFCHEADSUBRT","SoilMTotal","SOIL_M 1"/) 
 ; soil_m_total: kg/m^2
  nvar=dimsizes(vars_to_plot)
 ; ===== one at a time =====
@@ -181,9 +181,17 @@ begin
                    ff->$"SOIL_M 3"$ * 0.8 + ff->$"SOIL_M 4"$ * 0.6
             var2dx=var2dx
             var2dx@units="m3/m2"
+            var2dx@long_name="soil total moist."
         else
             var2dx=ff->$vars_to_plot(ivar)$
         end if
+        ;if SOIL_M N (N=1..4)
+        titles=str_split(vars_to_plot(ivar), " ")
+        if(titles(0) .eq. "SOIL_M" .and. dimsizes(titles) .eq. 2) then
+            var2dx@units="m3/m3"
+            var2dx@long_name="soil moist. lev"+titles(1)
+        end if
+        delete(titles)
         if(isvar("avg_filter_kernel_size")) then
             ;;do filter
             if(got_h .eq. 0) then
@@ -199,7 +207,7 @@ begin
         var2d@lon2d = lon2d(j1:j2, i1:i2)
         var2d@lat2d = lat2d(j1:j2, i1:i2)
         ;print((/"after read var"/))
-        varname=str_sub_str(vars_to_plot(ivar), " ", "_")
+        varname=str_sub_str(str_sub_str(vars_to_plot(ivar), " ", ""), "_", "")
         pngfile=varname+"_"+dom_name+"_valid_at_"+ymdh
         wks = gsn_open_wks("png",pngfile)
         gsn_define_colormap(wks, "precip2_17lev")
@@ -222,7 +230,7 @@ begin
         if(vars_to_plot(ivar) .eq. "SoilMTotal") then
             res@cnLevelSelectionMode = "ExplicitLevels"
             res@cnLevels = (/0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95/)
-            res@cnFillColors = (/2, 4, 5, 6, 7, 9, 10, 13, 14, 15, 16, 17, 19/)
+            res@cnFillColors = (/2, 4, 5, 6, 7, 9, 10, 13, 14, 15, 16, 17, 18/)
         end if
         if(vars_to_plot(ivar) .eq. "ZWATTABLRT") then
             res@cnLevelSelectionMode = "ExplicitLevels"
@@ -231,8 +239,10 @@ begin
         end if
         if(any(vars_to_plot(ivar) .eq. (/"SOIL_M 1", "SOIL_M 2", "SOIL_M 3", "SOIL_M 4"/))) then
             res@cnLevelSelectionMode = "ExplicitLevels"
-            res@cnLevels=fspan(0.31, 0.47, 17)
-            res@cnFillColors=ispan(2,19,1)
+;            res@cnLevels=fspan(0.31, 0.47, 17)
+;            res@cnFillColors=ispan(2,19,1)
+            res@cnLevels = fspan(0.0,0.5,11)
+            res@cnFillColors= tointeger(fspan(2,18,12))
         end if
         res@mpProjection                = "LambertConformal"
         res@mpLambertParallel1F         = min(lat2d(j1:j2, i1:i2))
@@ -310,6 +320,8 @@ begin
         delete(res@cnLevels)
         delete(res@cnFillColors)
         delete(wks)
+        delete(var2d)
+        delete(var2dx)
         convert_and_copyout(pngfile+ ".png", copydirs)
     end do
  end do

@@ -1,0 +1,4 @@
+note:
+1. all these ncl are not used in real-time running
+2. these ncl may not compatible with SZMB NCL v5.2.1 (should be compatible with NCL v6.4)
+3. refer to *sh to see how the ncl is used

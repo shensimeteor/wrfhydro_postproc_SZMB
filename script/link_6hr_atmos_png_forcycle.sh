@@ -25,7 +25,7 @@ source $this_dir/datelib.sh
 for ((h=$hrbef; h<=-1; h++)); do
     dat=$(date_add $cycle $h "hour")
     echo "dat: $dat"
-    if [ -d $destdir/$cycle/$dat ]; 
+    if [ -d $destdir/$cycle/$dat ]; then 
         echo "skip, $destdir/$cycle/$dat already exist"
         continue
     fi

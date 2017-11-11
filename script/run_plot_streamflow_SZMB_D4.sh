@@ -67,3 +67,4 @@ for png in $(ls ../before_overlay/*.png); do
     cp GE_${pngtitle}.png $webdir/gifs/$datx/d4_Streamflow.png
     rm inter.png inter2.png
 done
+touch $workdir/finished.streamflow_D4

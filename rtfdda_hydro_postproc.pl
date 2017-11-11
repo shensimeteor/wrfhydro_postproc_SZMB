@@ -46,7 +46,7 @@ print("cycle: $THIS_CYCLE\n");
 print("hydro_root: $HYDRO_ROOT\n");
 print("workdir: $workdir\n");
 print("\n");
-&clean_dir("/dev/shm/hydro_postproc/$JOB_ID/$MEM_NAME", 2);
+&clean_dir("/dev/shm/hydro_postproc/$JOB_ID/$MEM_NAME", 0);
 #wait for hydro files
 #1). wait for hydro cycle dir
 $flag=&tool_file_wait(60,60,($CYCLE_DIR));
@@ -119,8 +119,35 @@ for $plot (@plots) {
     print("===================================\n");
 }
 
-
-
+#wait for all finish
+print("\nstart monitor plot tasks\n");
+sleep(120);
+$max_wait=40;
+$sec=60;
+for ($iwait=0; $iwait <= $max_wait; $iwait++){
+    $f=1;
+    for $plot (@plots) {
+        $dir=$plot;
+        if($plot =~ /streamflow/){
+            $dir="streamflow";
+        }
+        if ( ! -e "$workdir/$dir/finished.$plot" ) {
+            $f=0;
+            last;
+        }
+    }
+    if($f == 1){
+        print("All finished\n");
+        system("touch $WEB_DIR/cycles/$THIS_CYCLE/flag.hydro_added");
+        last;
+    }else{
+        print("--wait: $iwait ($sec second)\n");
+        sleep($sec);
+    }
+}
+######
+        
+        
 
 sub wait_hydro_run(){
     my ($dir_hydro_run, $expected_date, $max_wait, $wait_sec)=@_;

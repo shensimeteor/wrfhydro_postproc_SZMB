@@ -99,7 +99,7 @@ ln -sf ${consdir}/GL*.txt .
 cmd="ncl 'srcfilename=\"*.RTOUT_DOMAIN1\"' 'dom_name=\"GL\"' 'lonlat_list=\"113.955,114.113,22.577,22.740\"' 'add_chan_border=\"GL\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' plot_tilevars.ncl"
 bash -c "$cmd"
 #rm -rf *RTOUT_DOMAIN1
-touch $webdir/cycles/$cycle/flag.hydro_added
+touch $workdir/finished.tiles
 date
 
 

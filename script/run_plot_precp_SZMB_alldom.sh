@@ -22,7 +22,7 @@ echo "webdir:    $webdir"
 echo "cycle:     $cycle"
 echo ""
 #normal
-test -d $workdir || test -d -p $workdir || mkdir -p -p $workdir
+test -d $workdir || mkdir -p $workdir
 cd ${workdir}
 #D4
 echo "D4"
@@ -95,6 +95,6 @@ echo "$cmd"
 bash -c "$cmd"
 bash -c "$cmd"
 #rm -rf *LDASIN_DOMAIN1
-touch $webdir/cycles/$cycle/flag.hydro_added
+touch $workdir/finished.precp
 date
 

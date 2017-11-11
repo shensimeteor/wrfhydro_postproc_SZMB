@@ -23,7 +23,7 @@ echo "cycle:     $cycle"
 echo ""
 
 #normal
-test -d $workdir || test -d -p $workdir || mkdir -p -p $workdir
+test -d $workdir || mkdir -p $workdir
 cd ${workdir}
 #D4
 echo "D4"
@@ -96,7 +96,7 @@ ln -sf $scriptdir/convert_and_copyout.ncl .
 cmd="ncl 'srcfilename=\"*.LDASOUT_DOMAIN1\"' 'dom_name=\"GL\"' 'lonlat_list=\"113.955,114.113,22.577,22.740\"' 'add_chan_border=\"GL\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' plot_evapor_Customize.ncl >& log.plot"
 echo "$cmd"
 bash -c "$cmd"
-touch $webdir/cycles/$cycle/flag.hydro_added
+touch $workdir/finished.evapor
 date
 
 

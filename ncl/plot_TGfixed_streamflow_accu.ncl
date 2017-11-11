@@ -46,6 +46,8 @@ begin
     nline=dimsizes(nodes_idx)+1
     ;read 2d, data2d(nfile_between_start_end, n_node+1, 1 for sum of inflow nodes)
     data3d=read_accu_streamflow(files, nodes_idx, (/3/))
+    printVarSummary(data3d)
+    print(data3d@str_dt)
     data2dx=new((/nfile, nline/), "float")
     data2dx(:,0:nline-2) = data3d(:,:,0)
     data2dx(:,nline-1) = dim_sum_n(data2dx(:,0:nline-3),1)
@@ -71,7 +73,7 @@ begin
     res@xyLineColors= colors
     res@xyLineThicknessF = 5.0
     res@xyDashPattern = 0
-    res@tiMainString = "Nodes 3hr-Accumulated StreamFlow (10~S~3~N~ m~S~3~N~) "
+    res@tiMainString = "3hr-Accumulated StreamFlow (10~S~3~N~ m~S~3~N~) "
     res@gsnFrame=False
     res@gsnDraw=False
     res@vpXF=0.15

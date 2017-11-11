@@ -71,7 +71,7 @@ begin
     res@xyLineColors= colors
     res@xyLineThicknessF = 5.0
     res@xyDashPattern = 0
-    res@tiMainString = "Nodes 3hr-Accumulated StreamFlow (10~S~3~N~ m~S~3~N~) "
+    res@tiMainString = "Accumulated StreamFlow (10~S~3~N~ m~S~3~N~) "
     res@gsnFrame=False
     res@gsnDraw=False
     res@vpXF=0.15
