@@ -81,8 +81,8 @@ print("\n");
 &copy_noplot_final_evapor($WEB_DIR, $THIS_CYCLE, ("d4", "d5", "TG", "GL"));
 
 #plot
+#@plots=("timeseries");
 @plots=("precp", "tiles", "evapor", "streamflow_TG", "streamflow_SZ", "streamflow_GL", "streamflow_D4", "timeseries");
-#@plots=("precp", "tiles", "evapor", "streamflow_TG", "streamflow_GL", "timeseries");
 for $plot (@plots) {
     print((/"plot: $plot"/));
     if($plot eq "precp") {

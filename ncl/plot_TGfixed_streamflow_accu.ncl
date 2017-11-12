@@ -13,7 +13,7 @@ begin
     if(.not. isvar("file_pattern")) then
         print((/"input: file_Pattern (streamflow file pattern to ls)"/))
         print((/" optional: start_date10, end_date10: the range of X axis in plots"/))
-        print((/"           ymax, copydir_list, cycle_date10(date10 formatted cycle)"/))
+        print((/"           ymax, copydir_list, cycle_date10(date10 formatted cycle), data_outfile"/))
         exit
     end if
     nodes_idx_list="17751,18024,18286,16975,15568,14986" ; 0..4, inflow, 5, outflow
@@ -42,12 +42,13 @@ begin
         print((/"Error, since you pass copydir_list, you should pass cycle_date10 as well"/))
         exit
     end if
+    if(isvar("data_outfile")) then
+        print((/"Log: you will write data to "+data_outfile/))
+    end if
     colors=str_split(color_list, ",")
     nline=dimsizes(nodes_idx)+1
     ;read 2d, data2d(nfile_between_start_end, n_node+1, 1 for sum of inflow nodes)
     data3d=read_accu_streamflow(files, nodes_idx, (/3/))
-    printVarSummary(data3d)
-    print(data3d@str_dt)
     data2dx=new((/nfile, nline/), "float")
     data2dx(:,0:nline-2) = data3d(:,:,0)
     data2dx(:,nline-1) = dim_sum_n(data2dx(:,0:nline-3),1)
@@ -108,4 +109,9 @@ begin
     frame(wks)
     delete(wks)
     convert_and_copyout_forTS(fig_name+".png", copydirs, cycle_date10)
+    ;; write out data to csv file
+    if(isvar("data_outfile")) then
+        var_titles="Node:"+nodes_names
+        writeout_data(str_dt, data2d, var_titles, data_outfile)
+    end if
 end

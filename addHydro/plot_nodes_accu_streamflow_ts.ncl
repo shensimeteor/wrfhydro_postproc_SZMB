@@ -67,6 +67,7 @@ begin
     end if
     if(isvar("data_outfile_prefix")) then
         print((/"Log: you will write data to "+data_outfile_prefix +"*.csv"/))
+        exit
     end if
     ;read 3d
     data3d=read_accu_streamflow(files, nodes_idx, accu_hours)

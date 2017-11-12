@@ -44,6 +44,7 @@ begin
     end if
     if(isvar("data_outfile")) then
         print((/"Log: you will write data to "+data_outfile/))
+        exit
     end if
     colors=str_split(color_list, ",")
     nline=dimsizes(nodes_idx)+1
@@ -112,6 +113,6 @@ begin
     ;; write out data to csv file
     if(isvar("data_outfile")) then
         var_titles="Node:"+nodes_names
-        writeout_data(str_dt(idx), data2d, var_titles, data_outfile)
+        writeout_data(str_dt, data2d, var_titles, data_outfile)
     end if
 end

@@ -514,13 +514,13 @@ begin
     ntime=dimsizes(str_dt)
     if(nvar .ne. dims(1)) then
         print((/"Error in writeout_data, data2d & title_data2d size conflict"/))
-        exit
+        exit(0)
     end if
     if(ntime .ne. dims(0)) then
         print((/"Error in writeout_data, data2d & str_dt10 size conflict"/))
-        exit
+        exit(0)
     end if
-    strs=new((/ntime+1, nvar+1/), "string")
+    strs=new((/nvar+1, nt+1/), "string")
     strs(0, 0) = "datetime"
     strs(0, 1:nvar)= title_data2d
     do it=0,ntime-1
