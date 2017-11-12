@@ -13,7 +13,7 @@ begin
     if(.not. isvar("file_pattern")) then
         print((/"input: file_Pattern (streamflow file pattern to ls)"/))
         print((/" optional: start_date10, end_date10: the range of X axis in plots"/))
-        print((/"           ymax, copydir_list, cycle_date10(date10 formatted cycle)"/))
+        print((/"           ymax, copydir_list, cycle_date10(date10 formatted cycle), data_outfile"/))
         exit
     end if
     nodes_idx_list="17751,18024,18286,16975,15568,14986" ; 0..4, inflow, 5, outflow
@@ -40,6 +40,10 @@ begin
     end if
     if(isvar("copydir_list") .and. .not. isvar("cycle_date10")) then
         print((/"Error, since you pass copydir_list, you should pass cycle_date10 as well"/))
+        exit
+    end if
+    if(isvar("data_outfile")) then
+        print((/"Log: you will write data to "+data_outfile/))
         exit
     end if
     colors=str_split(color_list, ",")
@@ -108,4 +112,9 @@ begin
     frame(wks)
     delete(wks)
     convert_and_copyout_forTS(fig_name+".png", copydirs, cycle_date10)
+    ;; write out data to csv file
+    if(isvar("data_outfile")) then
+        var_titles="Node:"+nodes_names
+        writeout_data(str_dt, data2d, var_titles, data_outfile)
+    end if
 end

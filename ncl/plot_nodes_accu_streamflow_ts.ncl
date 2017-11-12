@@ -14,6 +14,7 @@ load "convert_and_copyout_forTS.ncl"
 ;           *ymax (default 200) 
 ;           *copydir_list (for realtime)
 ;           *cycle_date10 (YYYYMMDDHH cycle)
+;           *data_outfile_prefix (to save time-series data in ${data_outfile_prefix}_nodeXX.csv)
 ; sishen, 20170822
 
 begin
@@ -62,6 +63,10 @@ begin
     end if
     if(isvar("copydir_list") .and. .not. isvar("cycle_date10")) then
         print((/"Error, since you pass copydir_list, you should pass cycle_date10 as well"/))
+        exit
+    end if
+    if(isvar("data_outfile_prefix")) then
+        print((/"Log: you will write data to "+data_outfile_prefix +"*.csv"/))
         exit
     end if
     ;read 3d
@@ -124,5 +129,11 @@ begin
         frame(wks)
         delete(wks)
         convert_and_copyout_forTS(fig_name+".png", copydirs, cycle_date10)
+        ;; write out data to csv file
+        if(isvar("data_outfile_prefix")) then
+            outfile=data_outfile_prefix+"_node"+nodes_names(inode)+".csv"
+            var_titles="AcHr:"+accu_hours
+            writeout_data(data2d@str_dt(idx), data2d, var_titles, outfile)
+        end if
     end do
 end

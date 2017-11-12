@@ -502,3 +502,38 @@ begin
     return(plot)
 end ;}}}
 
+; ---------------------------------------------
+; on writing out data
+; ---------------------------------------------
+undef("writeout_data")
+procedure writeout_data(str_dt: string, data2d: numeric, title_data2d: string, fileout: string)
+local nvar, dims, ntime, strs, strx, it, ivar
+begin
+    nvar=dimsizes(title_data2d)
+    dims=dimsizes(data2d)
+    ntime=dimsizes(str_dt)
+    if(nvar .ne. dims(1)) then
+        print((/"Error in writeout_data, data2d & title_data2d size conflict"/))
+        exit(0)
+    end if
+    if(ntime .ne. dims(0)) then
+        print((/"Error in writeout_data, data2d & str_dt10 size conflict"/))
+        exit(0)
+    end if
+    strs=new((/nvar+1, nt+1/), "string")
+    strs(0, 0) = "datetime"
+    strs(0, 1:nvar)= title_data2d
+    do it=0,ntime-1
+        strs(it+1,0) = str_dt(it)
+        do ivar=0,nvar-1
+            strs(it+1, ivar+1) = ""+data2d(it,ivar)
+        end do
+    end do 
+    strx=new((/ntime+1/), "string")
+    do it=0,ntime
+        strx(it) = str_join(strs(it,:), ",")
+    end do
+    asciiwrite(fileout, strx)
+end
+
+
