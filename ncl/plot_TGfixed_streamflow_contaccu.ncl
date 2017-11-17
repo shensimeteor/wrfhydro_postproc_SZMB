@@ -112,10 +112,6 @@ begin
     ;; write out data to csv file
     if(isvar("data_outfile")) then
         var_titles="Node:"+nodes_names
-<<<<<<< HEAD
         writeout_data(str_dt(idx), data2d, var_titles, data_outfile)
-=======
-        writeout_data(str_dt, data2d, var_titles, data_outfile)
->>>>>>> c1270434f6816390de5edc2e3863c1610f27a2e9
     end if
 end
