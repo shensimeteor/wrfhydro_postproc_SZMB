@@ -79,6 +79,25 @@ begin
     return(plotx)
 end
 
+undef("add_node_marker")
+function add_node_marker(wks, plot, dom_name)
+local file_channel, lonlat_channode, res1, plotx, file_exist
+begin
+    file_channel=dom_name+"_channode_lonlat.txt"
+    file_exist=tointeger(systemfunc("ls "+file_channel+" >& /dev/null && echo 1 || echo 0"))
+    if(file_exist .eq. 0) then
+        print((/"Warn: "+file_channel+" not exit, skip ploting node markers"/))
+        return(0)
+    end if
+    lonlat_channode=read_ascii_lonlat(file_channel)
+    res1=True
+    res1@gsMarkerIndex=16
+    res1@gsMarkerColor="black"
+    res1@gsMarkerSizeF=0.002
+    plotx=gsn_add_polymarker(wks, plot, lonlat_channode(:,0), lonlat_channode(:,1), res1)
+    return(plotx)
+end
+
 begin
 
 ; input:
@@ -86,10 +105,9 @@ begin
 ; optional:
 ;    lonlat_list=lon1,lon2,lat1,lat2 (define the subdomain to plot, default is whole domain)
 ;    dom_name (default is D4, other case: SZ--with predefined lonlat_list; TG; GL)
-;    add_chan_border (default is "", other case: TG, GL, TGchan)
-;       TG: need TG_channode_lonlat.txt, TG_lakeborder_lonlat.txt TG_basinborder_lonlat.txt. plot channel-ndoes +  border makers
-;       GL: need GL_channode_lonlat.txt. plot channel nodes markers
-;       TGchan: only the TG_channode_lonlat.txt (only plot channel node markers)
+;    add_chan_border (default is "", other case: TGall, TG, GL, ...))
+;      TGall: need TG_channode_lonlat.txt, TG_lakeborder_lonlat.txt TG_basinborder_lonlat.txt. plot channel-ndoes+border makers
+;      XX: need XX_channode_lonlat.txt. plot channel nodes markers (XX can be any dom, e.g. TG,GL,BAB..), only plot channel-nodes
 ;    avg_filter_kernel_size (default is no filter, otherwise, give the size of conv.matrix--odd number; to smooth tile field)
 ;    copydir_list: for realtime run, a list separated by ',' containing dest-dir to cp pngs
 
@@ -299,18 +317,10 @@ begin
         ; print((/"before polylines"/))
         map_SZD = gsn_add_shapefile_polylines(wks,map,"./SZDistrictSurface.nc",lnres)
         if(isvar("add_chan_border")) then
-           if(add_chan_border .eq. "TG") then
+           if(add_chan_border .eq. "TGall") then
               plots=add_border_marker_line_TG(wks, map)
            else
-              if(add_chan_border .eq. "GL") then
-                  plots=add_node_marker_GL(wks,map)
-              else
-                 if(add_chan_border .eq. "TGchan") then
-                     plots=add_node_marker_TG(wks,map)
-                 else
-                     print("Warning: add_chan_border NOT recogized!")
-                 end if
-              end if
+              plots=add_node_marker(wks, map, add_chan_border)
            end if
         end if
         ;print((/"before draw frame"/))

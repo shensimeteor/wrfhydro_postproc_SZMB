@@ -77,7 +77,7 @@ ln -sf $scriptdir/ncl_future_func.ncl .
 ln -sf $scriptdir/convert_and_copyout.ncl .
 ln -sf ${datadir}/geo_em.nc .
 ln -sf ${consdir}/TG*.txt .
-cmd="ncl 'srcfilename=\"*.RTOUT_DOMAIN1\"' 'dom_name=\"TG\"' 'lonlat_list=\"113.843,113.936,22.595,22.7\"' 'add_chan_border=\"TGchan\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' plot_tilevars.ncl"
+cmd="ncl 'srcfilename=\"*.RTOUT_DOMAIN1\"' 'dom_name=\"TG\"' 'lonlat_list=\"113.843,113.936,22.595,22.7\"' 'add_chan_border=\"TG\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' plot_tilevars.ncl"
 bash -c "$cmd"
 #rm -rf *.RTOUT_DOMAIN1
 date
@@ -98,6 +98,25 @@ ln -sf ${datadir}/geo_em.nc .
 ln -sf ${consdir}/GL*.txt .
 cmd="ncl 'srcfilename=\"*.RTOUT_DOMAIN1\"' 'dom_name=\"GL\"' 'lonlat_list=\"113.955,114.113,22.577,22.740\"' 'add_chan_border=\"GL\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' plot_tilevars.ncl"
 bash -c "$cmd"
+cd ..
+#rm -rf *RTOUT_DOMAIN1
+#BAB
+echo "BAB"
+test -d BAB || mkdir -p BAB
+cd BAB
+$1/script/cpln_hydrofile_here.sh ${cycledir}/ RTOUT_DOMAIN1 ln $cycle -6 24
+ln -sf ${scriptdir}/plot_tilevars.ncl .
+ln -sf ${scriptdir}/gsn_add_shapefile_polylines_for_v600.ncl .
+ln -sf ${datadir}/SZDistrictSurface.nc .
+ln -sf ${scriptdir}/any2d_lonlat_to_ij.ncl .
+ln -sf $scriptdir/smooth_convolution.ncl .
+ln -sf $scriptdir/ncl_future_func.ncl .
+ln -sf $scriptdir/convert_and_copyout.ncl .
+ln -sf ${datadir}/geo_em.nc .
+ln -sf ${consdir}/BAB*.txt .
+cmd="ncl 'srcfilename=\"*.RTOUT_DOMAIN1\"' 'dom_name=\"BAB\"' 'lonlat_list=\"113.753,113.896,22.666,22.795\"' 'add_chan_border=\"BAB\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' plot_tilevars.ncl"
+bash -c "$cmd"
+cd ..
 #rm -rf *RTOUT_DOMAIN1
 touch $workdir/finished.tiles
 date

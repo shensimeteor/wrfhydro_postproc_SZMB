@@ -72,6 +72,11 @@ tspara=" 'data_outfile_prefix=\"$tsdir/GL_Accu_Streamflow_${cycle}\"' "
 cmd="ncl plot_nodes_accu_streamflow_ts.ncl 'nodes_idx_list=\"22204,20318,19500,17186\"'  'accu_hour_list=\"1,3,6,12,24\"'  'color_list=\"blue,cyan,green,orange,red\"' 'file_pattern=\"*.CHRTOUT_DOMAIN1\"' 'nodes_name_list=\"GuanLan,DaLang,LongHua,MinZhi\"' 'start_date10=\"$date_start\"' 'end_date10=\"$date_end\"' 'ymax=3500' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' 'cycle_date10=\"$cycle\"' $tspara "
 echo "$cmd"
 bash -c "$cmd"
+#BAB
+tspara=" 'data_outfile_prefix=\"$tsdir/GL_Accu_Streamflow_${cycle}\"' "
+cmd="ncl plot_nodes_accu_streamflow_ts.ncl 'nodes_idx_list=\"24265,23339,23901,26286\"'  'accu_hour_list=\"1,3,6,12,24\"'  'color_list=\"blue,cyan,green,orange,red\"' 'file_pattern=\"*.CHRTOUT_DOMAIN1\"' 'nodes_name_list=\"BAB1,BAB2,BAB3,BAB4\"' 'start_date10=\"$date_start\"' 'end_date10=\"$date_end\"' 'ymax=3500' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' 'cycle_date10=\"$cycle\"' $tspara "
+echo "$cmd"
+bash -c "$cmd"
 #TG in,out 3hr accu streamflow
 cmd="ncl plot_TGfixed_streamflow_accu.ncl 'file_pattern=\"*.CHRTOUT_DOMAIN1\"' 'start_date10=\"$date_start\"' 'end_date10=\"$date_end\"' 'ymax=250' 'cycle_date10=\"$cycle\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' "
 echo "$cmd"
@@ -79,6 +84,11 @@ bash -c "$cmd"
 #TG in,out cont-accu streamflow
 tspara=" 'data_outfile=\"$tsdir/TG_ContAccu_Streamflow_${cycle}.csv\"' "
 cmd="ncl plot_TGfixed_streamflow_contaccu.ncl 'file_pattern=\"*.CHRTOUT_DOMAIN1\"' 'start_date10=\"$date_start\"' 'end_date10=\"$date_end\"' 'ymax=1000' 'cycle_date10=\"$cycle\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' $tspara "
+echo "$cmd"
+bash -c "$cmd"
+#Other Reservoir (7)
+tspara=" 'data_outfile_prefix=\"$tsdir/Other_Accu_Streamflow_${cycle}\"' "
+cmd="ncl plot_nodes_accu_streamflow_ts.ncl 'nodes_idx_list=\"28703,27139,19409,24369,12962,13489,18292\"'  'accu_hour_list=\"1,3,6,12,24\"'  'color_list=\"blue,cyan,green,orange,red\"' 'file_pattern=\"*.CHRTOUT_DOMAIN1\"' 'nodes_name_list=\"DaJian,FengTian,ChiYou,GuanJing,ZhenKeng,MeiLin,GaoFeng\"' 'start_date10=\"$date_start\"' 'end_date10=\"$date_end\"' 'ymax=3500' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' 'cycle_date10=\"$cycle\"' $tspara "
 echo "$cmd"
 bash -c "$cmd"
 

@@ -56,7 +56,7 @@ if ($flag =~ /Fail/){
 }
 #2). wait for 20* file finished
 $finaldate=&tool_date12_add("${THIS_CYCLE}00", 24, "hour");
-&wait_hydro_run($CYCLE_DIR, $finaldate, 12, 30);
+&wait_hydro_run($CYCLE_DIR, $finaldate, 8, 30);
 print("\n");
 
 #cp to workdir
@@ -82,7 +82,7 @@ print("\n");
 
 #plot
 #@plots=("timeseries");
-@plots=("precp", "tiles", "evapor", "streamflow_TG", "streamflow_SZ", "streamflow_GL", "streamflow_D4", "timeseries");
+@plots=("precp", "tiles", "evapor", "streamflow_TG", "streamflow_SZ", "streamflow_GL", "streamflow_D4", "timeseries", "streamflow_BAB");
 for $plot (@plots) {
     print((/"plot: $plot"/));
     if($plot eq "precp") {
