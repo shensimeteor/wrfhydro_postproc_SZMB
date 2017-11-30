@@ -1,0 +1,639 @@
+#!/usr/bin/perl -wT --
+# *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
+# ** Copyright UCAR (c) [RAP] 1996 - 2005. All Rights Reserved.
+# *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
+# ugui:  RS Ruttenberg <becky@ucar.edu> Wed Sep 21 17:20:33 GMT 2005
+# perl wrapper around javascript image-viewer (adapted from MM5); locates
+# images to display.
+
+use strict;
+use CGI;
+
+my $query = new CGI;
+
+my $range = $query->url_param('range');
+#my $range = "ens/GWRUPPS/GFS_WCTRL_hydrocase/cycles/2017062318";
+my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdat) = gmtime;
+
+#;$range = "ens/GEXCEL/GFS_WCTRL";
+
+if ($range =~ /^([\/\w]+)$/) {
+  $range = $1;
+} else {
+&Exit("Range name \"$range\" must be alphanumeric");
+}
+
+my @title_web = split(/\//,$range);
+my $titlew    = $title_web[$#title_web];
+if ($titlew =~ /NAM_M/) {
+	$titlew = "MM5 (NAM)";
+}elsif($titlew =~ /GFS_W/) {
+        $titlew = "WRF (GFS)";
+}
+my $nsplit=scalar(@title_web);
+my $cycle=$title_web[$nsplit-1];
+$cycle =~ s/v//g;
+my $cycle_ymd=substr($cycle, 0, 8);
+my $cycle_hm=substr($cycle, 8,2);
+$yday += 1;
+$mon += 1;
+$year += 1900;
+
+my (%HoL, @files, $file, $temp, $i, $start, $end);
+my (@dates, $date, $date_index, $date_flag);
+my (@hours, $hr, $hour_index, $hour_string);
+my $today = sprintf( "%04d%02d%02d00", $year, $mon, $mday);
+
+$today = substr($today, 0, 8);
+
+my $image_dir = "/data01/home/fdda/apache/htdocs/images/${range}/";
+opendir(DIR, $image_dir ) || &Exit("Can't open $image_dir:  $!");
+#@files = grep (!/^\.\.?$/, readdir(DIR)); # this is for ., .. only
+@files = grep (!/^\..*$/, readdir(DIR)); # this throws out any .* file
+@files = grep (!/^_/, @files);
+@files = grep (/^\d*$/, @files); # an attempt to get datestamps only
+@files=sort @files;
+foreach $file (@files) {
+  $temp = substr($file, 0, 8);
+  if (substr($file, 8, 4)) {
+    push @{ $HoL{$temp} }, substr($file, 8, 4);
+  }
+}
+
+our $cycle_dateidx;
+our $cycle_hridx;
+my $hrmn;
+my $cnt;
+@dates =  sort keys %HoL;
+if (@dates) {
+  $date_index = -1;
+  foreach $i (0 .. $#dates) {
+     if ($dates[$i] eq $cycle_ymd) {
+         $cycle_dateidx=$i;
+         $cnt=0;
+         for $hrmn (@{$HoL{$cycle_ymd}}){
+             if ($hrmn eq $cycle_hm){
+                 $cycle_hridx=$cnt;
+             }
+             $cnt++;
+         }
+     }
+    if ($dates[$i] eq $today) {
+      $date_index = $i;
+      $date_flag = "real_time";
+      last;
+    }
+  }
+  if ($date_index < 0) {
+    $date_index = $#dates;
+    $date_flag = "historical";
+  }
+} else {
+&Exit("Missing Data - No Images to Display");
+}
+
+$hour = $hour . "00";
+if ($hour < 10) {
+  $hour = 0 . $hour;
+}
+$hour_index = 0;
+@hours = sort @{ $HoL{$dates[$date_index]} };
+  foreach $i (0 .. $#hours) {
+    if ($hours[$i] eq $hour) {
+      $hour_index = $i;
+    }
+  }
+
+&PrintJavascript();
+exit();
+
+sub Exit {
+
+my $error_string = $_[0];
+print <<DONE;
+Content-Type: text/html
+
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<TITLE>$titlew Cycle Visualization</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="ffffff" onUnload="close_anim_window()">
+
+<P ALIGN="LEFT">
+       <B><FONT FACE="Times New Roman,Times"><FONT SIZE=+2>
+          $titlew Cycle Visualization </FONT></FONT></B>
+         <BR><IMG SRC="/images/blue_line.gif" HEIGHT=2 WIDTH=400>
+
+<P ALIGN="LEFT">
+       <B><FONT FACE="Times New Roman,Times"><FONT SIZE=+1>
+       $error_string </FONT></FONT></B>
+</BODY>
+</HTML>
+DONE
+exit();
+}
+
+sub PrintJavascript {
+print <<DONE;
+Content-Type: text/html
+
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+<TITLE>$titlew Cycle Visualization</TITLE>
+
+<SCRIPT LANGUAGE="JavaScript">
+<!--
+
+image_type = ".png";
+path = "/images/${range}/";
+path_config = "/images/${range}/../../config/";
+name = "RTFDDA";
+prev_domain = "d1";
+default_movie_length = 18;
+
+DONE
+
+my $domain_counter = 0;
+my (@endpoints, @menu_items, @plot_menu, $plot_menu);
+my ($dummy, $values, $temp);
+my $js_file = "/data01/home/fdda/apache/htdocs/images/${range}/../../js_file.addHydroAtmos";
+my $js_file_default = "/data01/home/fdda/apache/htdocs/images/ens/GWRUPPS/GFS_WCTRL/js_file.addHydroAtmos";
+#my $js_file_default = "/data01/home/fdda/apache/htdocs/images/rtfdda/js_file";
+if (-e $js_file) {
+  open(INPUT, "< $js_file") or &Exit("Can't open $js_file for reading:  $!\n");
+} else {
+  open(INPUT, "< $js_file_default") or &Exit("Can't open $js_file_default for reading:  $!\n");
+}
+while (<INPUT>) {
+ print;
+ chomp;
+ if (/fields.d1/) {
+   if (/surf_plot/) {
+    ($dummy, $values) = split(/ = /);
+     chop $values;
+     push(@endpoints, $values);
+   }
+   if (/begin/) {
+    ($dummy, $temp) = split(/begin_/);
+    ($values, $dummy) = split(/ = /, $temp);
+     push(@plot_menu, $values);
+   }
+   if (/fields.d1.v/) {
+    ($dummy, $values) = split(/ = "/);
+     chop $values;
+     chop $values;
+     push(@menu_items, $values);
+   }
+ }
+ if (/domain.nb/) {
+ #$domain_counter++ if /new/;
+ #$domain_counter = 4;
+ ($dummy,$domain_counter) = split(/ = /);
+  $domain_counter ++;
+ }
+}
+close(INPUT);
+
+my $start_fields = $endpoints[0];
+my $end_fields = $endpoints[1];
+unshift (@menu_items, "");
+
+# match plot menu items to plot menu names
+my %plot_menu_hash = (
+  "surf_plot",    "Surface",
+  "upa_plot",     "Upper Air",
+  "cross_plot",   "Cross-Sections",
+  "wind_plot",    "SFC VAR+OBS ",
+  "lsm_plot",     "Other",
+  "sdg_plot",     "Skew-T",
+  "config_plot",  "Land Use",
+  "qpe_plot",     "QPE",
+  "ankf_plot",    "Bias Corrected",
+  "hydro_static", "Hydro Static",
+  "hydro_2d",     "Hydro 2dplot",
+  "hydro_ts",     "Hydro TimeSeries",
+  "atmos_plevs",  "Hydro AtmosPlevs",
+  "atmos_profs",  "Hydro AtmosProfs"
+);
+
+# get domain grid spacing, use default unless domain_file is specified
+
+our @grids = ("27km grid", "9km grid", "3km grid", "1km grid", "1km grid", "1km grid", "1km grid");
+our @domain_names = ("One", "Two", "Three","Four", "Five","TieGang", "GuanLan");
+
+our @atmos_grids = ("27km grid", "9km grid", "3km grid", "1km grid", "1km grid");
+our @atmos_domain_names = ("One", "Two", "Three","Four", "Five");
+our @atmos_domid = ("d1", "d2", "d3", "d4", "d5");
+our @hydro_grids = ("1km grid", "1km grid", "reservoir", "street", "street", "reservoirs");
+our @hydro_domain_names = ("Four", "Five", "TieGang", "GuanLan", "BaoAnBei", "Other");
+our @hydro_domid = ("d4", "d5", "TG", "GL", "BAB", "OTR");
+
+#my $domain_file = "/www/htdocs/images/${range}/domain_file";
+#if (-e $domain_file) {
+#  open(DOMAIN, $domain_file) || warn "Can't open domain file:  $!";
+#  while (<DOMAIN>)
+#  {
+#    chomp;
+#    ($dummy, $values) = split(/=/);
+#    @grids = split(',', $values);
+#  }
+#  close(DOMAIN);
+#}
+
+print "var dates = new Object ();\n";
+foreach $date (@dates) {
+  @hours = sort @{ $HoL{$date} };
+  if (@hours) {
+    $hour_string = join("', '",@hours);
+    $start = $hours[0];
+    $start = substr($start, 0, 2);
+    $end = $hours[$#hours];
+    $end = substr($end, 0, 2);
+  } else {
+  }
+  print "dates.d${date} = new Object ();\n";
+  print "dates.d${date}.hours = ['${hour_string}'];\n";
+  print "dates.d${date}.start = $start;\n";
+  print "dates.d${date}.end = $end;\n";
+}
+
+#print domains to js
+print "var atmos_domain_text=new Array(); \n";
+print "var atmos_domid = new Array(); \n";
+print "var hydro_domain_text=new Array(); \n";
+print "var hydro_domid = new Array(); \n";
+my $n_atmos_dom = scalar(@atmos_domain_names);
+my $n_hydro_dom = scalar(@hydro_domain_names);
+for (my $i=0;$i<$n_atmos_dom;$i++) {
+    print qq(atmos_domain_text[$i] = "$atmos_domain_names[$i] ($atmos_grids[$i])"; \n);
+    print qq(atmos_domid[$i] = "$atmos_domid[$i]"; \n);
+}
+for (my $i=0;$i<$n_hydro_dom;$i++) {
+    print qq(hydro_domain_text[$i] = "$hydro_domain_names[$i] ($hydro_grids[$i])"; \n);
+    print qq(hydro_domid[$i] = "$hydro_domid[$i]"; \n);
+}
+
+
+print <<DONE;
+
+function doReload() {
+  window.location.reload(true);
+}
+
+function change_plot() {
+  var new_plot = document.whole.plot_type.options[document.whole.plot_type.selectedIndex].value;
+  if (new_plot == "qpe_plot" || new_plot == "ankf_plot") {
+     update_domain_atmos();
+     if(document.whole.domain.selectedIndex <= 2){
+         document.whole.domain.selectedIndex=3; //only d4,d5 
+     }
+     document.whole.domain.options[0].disabled=true; //d1-d3, disable
+     document.whole.domain.options[1].disabled=true;
+     document.whole.domain.options[2].disabled=true;
+     document.whole.domain.options[3].disabled=false; //d4-d5, enable
+     document.whole.domain.options[4].disabled=false;
+     document.whole.date.disabled=false;
+     document.whole.hour.disabled=false;
+  }else if(new_plot == "hydro_2d") {
+     update_domain_hydro_noother();
+     document.whole.date.disabled=false;
+     document.whole.hour.disabled=false;
+  } else if(new_plot == "hydro_ts"){
+     update_domain_hydro();
+     document.whole.domain.options[0].disabled=true;
+     document.whole.domain.options[1].disabled=true;
+     document.whole.domain.selectedIndex=2;
+     document.whole.date.selectedIndex=$cycle_dateidx;
+     change_hour();
+     document.whole.hour.selectedIndex=$cycle_hridx;
+     document.whole.date.disabled=true;
+     document.whole.hour.disabled=true;
+  } else if(new_plot == "atmos_profs") {
+     update_domain_atmos();
+     document.whole.domain.selectedIndex=3;
+     document.whole.date.disabled=false;
+     document.whole.hour.disabled=false;
+  } else if (new_plot == "hydro_static") {
+     update_domain_hydro_noother();
+  } else if (new_plot == "config_plot") {
+      update_domain_atmos();
+  } else {
+       update_domain_atmos();
+       document.whole.date.disabled=false;
+       document.whole.hour.disabled=false;
+  } 
+  var curr_domain = document.whole.domain.options[document.whole.domain.selectedIndex].value;
+  var start = fields[curr_domain]["begin_" + new_plot];
+  var end = fields[curr_domain]["end_" + new_plot];
+  change_menu_text_custom("field_type", curr_domain, start, end, "v");
+
+  change_image();
+}
+
+//update domain for atmos (d1-d5 domain)
+function update_domain_atmos(){
+    var len=document.whole.domain.options.length;
+    for (var i=0; i<len; i++){
+        document.whole.domain.options[0]= null;
+    }
+    for  (var i=0; i<atmos_domain_text.length; i++){
+        var item=new Option(atmos_domain_text[i], atmos_domid[i]);
+        document.whole.domain.options.add(item);
+    }
+}
+//update domain for hydro (d4,d5,TG,GL..)
+function update_domain_hydro() {
+    var len=document.whole.domain.options.length;
+    for (var i=0; i<len; i++){
+        document.whole.domain.options[0]= null;
+    }
+    for  (var i=0; i<hydro_domain_text.length; i++){
+        var item=new Option(hydro_domain_text[i], hydro_domid[i]);
+        document.whole.domain.options.add(item);
+    }
+}
+
+function update_domain_hydro_noother(){
+    var len=document.whole.domain.options.length;
+    for (var i=0; i<len; i++){
+        document.whole.domain.options[0]= null;
+    }
+    for  (var i=0; i<hydro_domain_text.length-1; i++){
+        var item=new Option(hydro_domain_text[i], hydro_domid[i]);
+        document.whole.domain.options.add(item);
+    }
+}
+
+function change_domain() {
+  var new_domain = document.whole.domain.options[document.whole.domain.selectedIndex].value;
+  var curr_cycle = document.whole.date.options[document.whole.date.selectedIndex].value;
+  var curr_plot = document.whole.plot_type.options[document.whole.plot_type.selectedIndex].value;
+    prev_domain = new_domain;
+    var start = fields[new_domain]["begin_" + curr_plot];
+    var end = fields[new_domain]["end_" + curr_plot];
+    if (curr_plot == "config_plot") {
+      change_menu_text_custom("field_type", new_domain, start, end, "v");
+    } else {
+      change_menu_text_custom("field_type", new_domain, start, end, "v");
+    }
+
+  change_image();
+}
+
+function change_hour() {
+  var curr_date = document.whole.date.options[document.whole.date.selectedIndex].value;
+  var length = dates["d" + curr_date]["hours"].length - 1;
+  change_menu_text("hour", curr_date, 0, length, "Z");
+
+  change_image();
+}
+
+function change_menu_text(menu_name, curr_date, start, end, lookup_text) {
+  var new_entry, new_text, new_value, save_length, save_text;
+  save_length = document.whole[menu_name].selectedIndex;
+  save_text = document.whole[menu_name].options[save_length].text;
+  document.whole[menu_name].options.length = 0;
+  for (var i = start; i <= end; i++ ) {
+    new_value = dates["d" + curr_date]["hours"][i];
+    new_text = new_value + lookup_text;
+    new_text == save_text ?
+      new_entry = new Option (new_text, new_value, 0, 1) :
+      new_entry = new Option (new_text, new_value, 0, 0);
+    document.whole[menu_name].options[i-start] = new_entry;
+  }
+  if (document.whole[menu_name].selectedIndex < 0) {
+     document.whole[menu_name].selectedIndex = 0;
+  }
+}
+
+function change_menu_text_custom(menu_name, lookup, start, end, lookup_text) {
+  var new_entry, new_text, new_text_lookup, new_value, new_value_lookup, save_length, save_text;
+  save_length = document.whole[menu_name].selectedIndex;
+  save_text = document.whole[menu_name].options[save_length].text;
+  document.whole[menu_name].options.length = 0;
+  for (var i = start; i <= end; i++ ) {
+    new_value_lookup = lookup_text + i + "_value";
+    new_value = fields[lookup][new_value_lookup];
+    new_text_lookup = lookup_text + i + "_text";
+    new_text = fields[lookup][new_text_lookup];
+  new_text == save_text ?  new_entry = new Option (new_text, new_value, 0, 1) :
+    new_entry = new Option (new_text, new_value, 0, 0);
+    document.whole[menu_name].options[i-start] = new_entry;
+  }
+  if (document.whole[menu_name].selectedIndex < 0) {
+     document.whole[menu_name].selectedIndex = 0;
+  }
+}
+
+function change_menu_num(menu_name, start, new_length, step, value_text,
+	text_text) {
+  var new_entry, new_text, new_value, save_length, save_value, temp;
+  save_length = document.whole[menu_name].selectedIndex;
+  save_value = document.whole[menu_name].options[save_length].value;
+  document.whole[menu_name].options.length = 0;
+  for (var i = start; i < new_length+ start; i++ ) {
+    temp = i * step;
+    if (temp < 10) {
+      new_text = "0" + temp + text_text;
+      new_value = value_text + "0" + temp;
+    } else {
+      new_text = temp + text_text;
+      new_value = value_text + temp;
+    }
+    if (new_value == save_value) {
+      new_entry = new Option (new_text, new_value, 0, 1);
+    } else {
+      new_entry = new Option (new_text, new_value, 0, 0);
+    }
+    document.whole[menu_name].options[i - start] = new_entry;
+  }
+    if (document.whole[menu_name].selectedIndex < 0) {
+       document.whole[menu_name].selectedIndex = 0;
+    }
+}
+
+function change_image() {
+  var now = new Date();
+  var date_dir = document.whole.date.options[document.whole.date.selectedIndex].value;
+  var dom = document.whole.domain.options[document.whole.domain.selectedIndex].value;
+  var f_type = document.whole.field_type.options[document.whole.field_type.selectedIndex].value;
+  var hr = document.whole.hour.options[document.whole.hour.selectedIndex].value;
+  var curr_plot = document.whole.plot_type.options[document.whole.plot_type.selectedIndex].value;
+    img_height = document.images["model_gif"].height;
+    img_width = document.images["model_gif"].width;
+  
+  if (curr_plot == "config_plot" || curr_plot == "hydro_static") {
+    document.images["model_gif"].src = path_config +  "/" + dom+ "_" + f_type + image_type + "?" + now.getTime();
+    close_anim_window();
+  } else if(curr_plot == "hydro_ts"){
+    document.images["model_gif"].src = path + date_dir + hr + "/" + f_type + image_type + "?" + now.getTime();
+    if (document.whole.movie[0].checked) {
+      img_height = document.images["model_gif"].height;
+      img_width = document.images["model_gif"].width;
+      new_height = img_height + 80;
+      new_width = img_width + 225;
+      animwin=window.open('','anim','height=' + new_height + ',width=' + new_width + ',scrollbars=yes,resizable=yes,status=yes');
+      animwin.location='/images/model/gmod_anim_png.html';
+     }
+  } else {
+    document.images["model_gif"].src = path + date_dir + hr + "/" + dom+ "_" + f_type + image_type + "?" + now.getTime();
+    if (document.whole.movie[0].checked) {
+      img_height = document.images["model_gif"].height;
+      img_width = document.images["model_gif"].width;
+      new_height = img_height + 80;
+      new_width = img_width + 225;
+      animwin=window.open('','anim','height=' + new_height + ',width=' + new_width + ',scrollbars=yes,resizable=yes,status=yes');
+      animwin.location='/images/model/gmod_anim_png.html';
+     }
+ }
+}
+
+function close_anim_window() {
+  if (window.animwin) {
+    if (!window.animwin.closed) {
+      animwin.close();
+      document.whole.movie[1].checked = true;
+    }
+  }
+}
+
+// -->
+</SCRIPT>
+
+</HEAD>
+
+<BODY BGCOLOR="ffffff" onUnload="close_anim_window()">
+
+<SCRIPT LANGUAGE="JavaScript">
+<!-- --> <P ALIGN=LEFT> <BR><H2> This Page requires Javascript
+<!-- -->You will need Netscape version 3.0 or higher or Internet Explorer 3.0
+<!-- -->or higher and Javascript enabled to view this.</H2></P><BR CLEAR=ALL>
+</SCRIPT>
+
+<P ALIGN="LEFT">
+       <B><FONT FACE="Times New Roman,Times"><FONT SIZE=+2>
+          $titlew Cycle Visualization </FONT></FONT></B>
+         <BR><IMG SRC="/images/blue_line.gif" HEIGHT=2 WIDTH=400>
+
+<P ALIGN="LEFT">
+ <FORM METHOD=POST NAME="whole">
+  <TABLE ALIGN="LEFT" BORDER=0 CELLPADDING=0 CELLSPACING=0>
+    <TR><TD COLSPAN=6 ALIGN="LEFT">
+DONE
+
+if ($date_flag eq "real_time") {
+print <<DONE;
+       <B><FONT FACE="Times New Roman,Times"><FONT SIZE=+1>
+          Real-Time Mode </FONT></FONT></B>
+DONE
+} else {
+print <<DONE;
+       <B><FONT FACE="Times New Roman,Times"><FONT SIZE=+1>
+          Historical Mode - No Current Images to Display </FONT></FONT></B>
+DONE
+}
+
+print <<DONE;
+ <INPUT TYPE="radio" NAME="refresh" VALUE="refresh" onclick="JavaScript:doReload()">Refresh Images
+      </TD>
+    </TR><TR>
+	<TD colspan = 6> &nbsp;</TD>
+    </TR><TR>
+      <TD WIDTH=100>
+  <B><P ALIGN="LEFT">Plot Type:</B>
+      </TD><TD WIDTH=200>
+  <B><P ALIGN="LEFT">Field:</B>
+      </TD><TD WIDTH=110>
+  <B><P ALIGN="LEFT">Domain:</B>
+      </TD><TD WIDTH=70>
+  <B><P ALIGN="LEFT">Date:</B>
+      </TD><TD WIDTH=70>
+  <B><P ALIGN="LEFT">HourMin:</B>
+      </TD><TD WIDTH=85>
+  <B><P ALIGN="LEFT">Movie:</B>
+</TR><TR>
+      <TD WIDTH=100>
+    <SELECT NAME=plot_type onchange="JavaScript:change_plot()">
+DONE
+  $i = 0;
+  print qq(<OPTION SELECTED VALUE="$plot_menu[$i]">$plot_menu_hash{$plot_menu[$i]}\n);
+for ($i = 1; $i <= $#plot_menu; $i++ ) {
+  print qq(<OPTION VALUE="$plot_menu[$i]">$plot_menu_hash{$plot_menu[$i]}\n);
+}
+print <<DONE;
+    </SELECT>
+      </TD><TD WIDTH=200>
+    <SELECT NAME=field_type onchange="JavaScript:change_image()">
+DONE
+  $i = $start_fields;
+  print qq(<OPTION SELECTED VALUE="$menu_items[$i+1]">$menu_items[$i]\n);
+for ($i = $start_fields + 2; $i <= $end_fields*2; $i+=2 ) {
+  print qq(<OPTION VALUE="$menu_items[$i+1]">$menu_items[$i]\n);
+      }
+print <<DONE;
+    </SELECT>
+      </TD><TD WIDTH=110>
+    <SELECT NAME=domain onchange="JavaScript:change_domain()">
+DONE
+
+  $i = 0;
+  print qq(<OPTION SELECTED VALUE="$atmos_domid[$i]">$atmos_domain_names[$i] ($grids[$i])\n);
+for ($i = 1; $i < 5 ; $i++ ) { 
+  print qq(<OPTION VALUE="$atmos_domid[$i]">$atmos_domain_names[$i] ($grids[$i])\n);
+}
+# print qq(<OPTION VALUE="TG"> TieGang (1km grid) \n);
+# print qq(<OPTION VALUE="GL"> GuanLan (1km grid) \n);
+
+print <<DONE;
+    </SELECT>
+      </TD><TD WIDTH=70>
+    <SELECT NAME=date onchange="JavaScript:change_hour()">
+DONE
+
+for ($i = 0; $i < $date_index; $i++ ) {
+  print qq(<OPTION VALUE="${dates[$i]}">${dates[$i]}\n);
+}
+print qq(<OPTION SELECTED VALUE="${dates[$date_index]}">${dates[$date_index]}\n);
+for ($i = $date_index +1; $i <= $#dates; $i++ ) {
+  print qq(<OPTION VALUE="${dates[$i]}">${dates[$i]}\n);
+}
+print "</SELECT>\n";
+print "      </TD><TD WIDTH=70>\n";
+print qq(<SELECT NAME=hour onchange="JavaScript:change_image()">\n);
+@hours = sort @{ $HoL{$dates[$date_index]} };
+for ($i = 0; $i < $hour_index; $i++ ) {
+  print qq(<OPTION VALUE="${hours[$i]}">${hours[$i]}Z\n);
+}
+print qq(<OPTION SELECTED VALUE="${hours[$hour_index]}">${hours[$hour_index]}Z\n);
+for ($i = $hour_index +1; $i <= $#hours; $i++ ) {
+  print qq(<OPTION VALUE="${hours[$i]}">${hours[$i]}Z\n);
+}
+
+print <<DONE;
+    </SELECT>
+      </TD><TD WIDTH=85>
+          <INPUT TYPE="radio" NAME="movie" VALUE="start" onclick="JavaScript:change_image()">Start
+          <INPUT TYPE="radio" NAME="movie" CHECKED VALUE="stop" onclick="JavaScript:close_anim_window()">Stop
+      </TD>
+    </TR>
+  </TABLE>
+ </FORM>
+</P>
+
+<BR CLEAR=ALL>
+<P ALIGN="LEFT">
+<SCRIPT LANGUAGE="JavaScript">
+  var now = new Date();
+  document.write("<IMG NAME=model_gif SRC= /images/${range}/${dates[$date_index]}${hours[$hour_index]}/d1_T2mWnd.png?" + now.getTime() + " >");
+</SCRIPT>
+</P>
+
+</BODY>
+</HTML>
+DONE
+}
+
+1;
