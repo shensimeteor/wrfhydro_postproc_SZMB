@@ -1,7 +1,7 @@
 #!/bin/bash
-#arguments: hydro_root_dir/{ncl,data,cons}; cycle_dir(put all data there); work_dir; web_dir/{cycles,gifs}; cycle; begin hour plot (e.g. -6); plot_end_hour (e.g. 24)
-if [ $# -lt 7 ]; then
-    echo "arguments: hydro_root_dir/{ncl,data,cons}; cycle_dir; work_dir; web_dir/{cycles,gifs}; cycle; plot_begin_hour; plot_end_hour"
+#arguments: hydro_root_dir/{ncl,data,cons}; cycle_dir(put all data there); work_dir; web_dir/{cycles,gifs}; cycle
+if [ $# -lt 5 ]; then
+    echo "arguments: hydro_root_dir/{ncl,data,cons}; cycle_dir; work_dir; web_dir/{cycles,gifs}; cycle"
     exit
 fi
 
@@ -12,8 +12,6 @@ datadir="$1/data/"
 consdir="$1/cons/"
 webdir=$4
 cycle=$5
-plot_begin_hour=$6
-plot_end_hour=$7
 
 date
 echo "scriptdir: $scriptdir"
@@ -21,14 +19,7 @@ echo "cycledir:  $cycledir"
 echo "workdir:   $workdir"
 echo "webdir:    $webdir"
 echo "cycle:     $cycle"
-echo "plot_begin_hour:  $plot_begin_hour"
-if [ $plot_begin_hour -gt 0 ]; then
-    echo "- Warning: usually plot_begin_hour should be <= 0 !!"
-fi
-echo "plot_end_hour: $plot_end_hour"
-if [ $plot_end_hour -lt 0 ]; then
-    echo "- Warning: usually plot_end_hour should be >=0 !!"
-fi
+echo ""
 #normal
 test -d $workdir || mkdir -p $workdir
 cd ${workdir}
@@ -66,8 +57,8 @@ this_dir=$(mydir $(pwd) $0)
 source $this_dir/datelib.sh
 ln -sf $cycledir/*.CHRTOUT_DOMAIN1 .
 ln -sf $scriptdir/*ncl .
-date_start=$(date_add $cycle $plot_begin_hour "hour")
-date_end=$(date_add $cycle $plot_end_hour "hour")
+date_start=$(date_add $cycle -6 "hour")
+date_end=$(date_add $cycle 24 "hour")
 # nodes accu streamflow 
 #TG
 tsdir="$webdir/tsdata/$cycle"
@@ -93,11 +84,6 @@ bash -c "$cmd"
 #TG in,out cont-accu streamflow
 tspara=" 'data_outfile=\"$tsdir/TG_ContAccu_Streamflow_${cycle}.csv\"' "
 cmd="ncl plot_TGfixed_streamflow_contaccu.ncl 'file_pattern=\"*.CHRTOUT_DOMAIN1\"' 'start_date10=\"$date_start\"' 'end_date10=\"$date_end\"' 'ymax=1000' 'cycle_date10=\"$cycle\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' $tspara "
-echo "$cmd"
-bash -c "$cmd"
-#Other Reservoir (7)
-tspara=" 'data_outfile_prefix=\"$tsdir/Other_Accu_Streamflow_${cycle}\"' "
-cmd="ncl plot_nodes_accu_streamflow_ts.ncl 'nodes_idx_list=\"28703,27139,19409,24369,12962,13489,18292\"'  'accu_hour_list=\"1,3,6,12,24\"'  'color_list=\"blue,cyan,green,orange,red\"' 'file_pattern=\"*.CHRTOUT_DOMAIN1\"' 'nodes_name_list=\"DaJian,FengTian,ChiYou,GuanJing,ZhenKeng,MeiLin,GaoFeng\"' 'start_date10=\"$date_start\"' 'end_date10=\"$date_end\"' 'ymax=3500' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' 'cycle_date10=\"$cycle\"' $tspara "
 echo "$cmd"
 bash -c "$cmd"
 

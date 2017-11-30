@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+#run on cepri-c1
 if (! $ARGV[0] || $ARGV[0] eq "--" || $ARGV[0] eq "-h") {
    print "rtfdda_hydro_postproc.pl  <-id GMID>  <-m MEMBER>  <-c cycle | -o offset_hr> \n";
    exit(-1);
@@ -53,14 +54,14 @@ print("\n");
 &clean_dir("/dev/shm/hydro_postproc/$JOB_ID/$MEM_NAME", 0);
 #wait for hydro files
 #1). wait for hydro cycle dir
-$flag=&tool_file_wait(60,60,($CYCLE_DIR)); #wait up to 1 hour until $CYCLE_DIR is generated
+$flag=&tool_file_wait(60,60,($CYCLE_DIR));
 if ($flag =~ /Fail/){
     print("Error, $CYCLE_DIR not exist, fail to postproc \n");
     exit;
 }
 #2). wait for 20* file finished
 $finaldate=&tool_date12_add("${THIS_CYCLE}00", 24, "hour");
-&wait_hydro_run($CYCLE_DIR, $finaldate, 12, 30); #wait until a)finaldate is generated; b)no new file generated in 6 minutes
+&wait_hydro_run($CYCLE_DIR, $finaldate, 8, 30);
 print("\n");
 
 #cp to workdir
@@ -75,18 +76,20 @@ if ( -e "$workdir/cycledata/flag.copy") {
 }
 print("\n");
 
-#link gifs atmos png to to cycles
-$cmd="bash $HYDRO_ROOT/script/link_old_atmos_png_forcycle.sh $WEB_DIR $THIS_CYCLE $plot_begin_hour";
-print($cmd."\n");
-system($cmd);
-print("\n");
+#link gifs atmos png to cycles -- not on cepri-c1
+#$cmd="bash $HYDRO_ROOT/script/link_old_atmos_png_forcycle.sh $WEB_DIR $THIS_CYCLE $plot_begin_hour";
+#print($cmd."\n");
+#system($cmd);
+#print("\n");
 
 #for Evapor (because it has no 24hour forecast), ln no_plots.gif there
-&copy_noplot_final_evapor($WEB_DIR, $THIS_CYCLE, ("d4", "d5", "TG", "GL"));
+&copy_noplot_final_evapor($WEB_DIR, $THIS_CYCLE, ("d4", "d5", "TG", "GL","BAB"));
 
 #plot
 #@plots=("timeseries");
 @plots=("precp", "tiles", "evapor", "streamflow_TG", "streamflow_SZ", "streamflow_GL", "streamflow_D4", "streamflow_BAB", "timeseries");
+#@plots=("precp", "evapor", "tiles");
+#@plots=("timeseries");
 for $plot (@plots) {
     print((/"plot: $plot"/));
     if($plot eq "precp") {

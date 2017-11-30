@@ -1,7 +1,6 @@
 #!/bin/bash
-#arguments: hydro_root_dir/{ncl,data,cons}; cycle_dir(put all data there); work_dir; web_dir/{cycles,gifs}; cycle; begin hour plot (e.g. -6); plot_end_hour (e.g. 24)
-if [ $# -lt 7 ]; then
-    echo "arguments: hydro_root_dir/{ncl,data,cons}; cycle_dir; work_dir; web_dir/{cycles,gifs}; cycle; plot_begin_hour; plot_end_hour"
+if [ $# -lt 5 ]; then
+    echo "arguments: hydro_root_dir/{ncl,data,cons}; cycle_dir; work_dir; web_dir/{cycles,gifs}; cycle"
     exit
 fi
 
@@ -12,8 +11,6 @@ datadir="$1/data/"
 consdir="$1/cons/"
 webdir=$4
 cycle=$5
-plot_begin_hour=$6
-plot_end_hour=$7
 
 date
 echo "scriptdir: $scriptdir"
@@ -21,14 +18,7 @@ echo "cycledir:  $cycledir"
 echo "workdir:   $workdir"
 echo "webdir:    $webdir"
 echo "cycle:     $cycle"
-echo "plot_begin_hour:  $plot_begin_hour"
-if [ $plot_begin_hour -gt 0 ]; then
-    echo "- Warning: usually plot_begin_hour should be <= 0 !!"
-fi
-echo "plot_end_hour: $plot_end_hour"
-if [ $plot_end_hour -lt 0 ]; then
-    echo "- Warning: usually plot_end_hour should be >=0 !!"
-fi
+echo ""
 #normal
 test -d $workdir || mkdir -p $workdir
 cd ${workdir}
@@ -36,7 +26,7 @@ cd ${workdir}
 echo "D4"
 test -d D4 || mkdir -p D4
 cd D4
-$1/script/cpln_hydrofile_here.sh ${cycledir}/ RTOUT_DOMAIN1 ln $cycle $plot_begin_hour $plot_end_hour
+$1/script/cpln_hydrofile_here.sh ${cycledir}/ RTOUT_DOMAIN1 ln $cycle -6 24
 ln -sf ${scriptdir}/plot_tilevars.ncl .
 ln -sf ${scriptdir}/gsn_add_shapefile_polylines_for_v600.ncl .
 ln -sf ${datadir}/SZDistrictSurface.nc .
@@ -56,7 +46,7 @@ cd ..
 echo "SZ"
 test -d SZ || mkdir -p SZ
 cd SZ
-$1/script/cpln_hydrofile_here.sh ${cycledir}/ RTOUT_DOMAIN1 ln $cycle $plot_begin_hour $plot_end_hour
+$1/script/cpln_hydrofile_here.sh ${cycledir}/ RTOUT_DOMAIN1 ln $cycle -6 24
 ln -sf ${scriptdir}/plot_tilevars.ncl .
 ln -sf ${scriptdir}/gsn_add_shapefile_polylines_for_v600.ncl .
 ln -sf ${datadir}/SZDistrictSurface.nc .
@@ -77,7 +67,7 @@ cd ..
 echo "TG"
 test -d TG || mkdir -p TG
 cd TG
-$1/script/cpln_hydrofile_here.sh ${cycledir}/ RTOUT_DOMAIN1 ln $cycle $plot_begin_hour $plot_end_hour
+$1/script/cpln_hydrofile_here.sh ${cycledir}/ RTOUT_DOMAIN1 ln $cycle -6 24
 ln -sf ${scriptdir}/plot_tilevars.ncl .
 ln -sf ${scriptdir}/gsn_add_shapefile_polylines_for_v600.ncl .
 ln -sf ${datadir}/SZDistrictSurface.nc .
@@ -96,7 +86,7 @@ cd ..
 echo "GL"
 test -d GL || mkdir -p GL
 cd GL
-$1/script/cpln_hydrofile_here.sh ${cycledir}/ RTOUT_DOMAIN1 ln $cycle $plot_begin_hour $plot_end_hour
+$1/script/cpln_hydrofile_here.sh ${cycledir}/ RTOUT_DOMAIN1 ln $cycle -6 24
 ln -sf ${scriptdir}/plot_tilevars.ncl .
 ln -sf ${scriptdir}/gsn_add_shapefile_polylines_for_v600.ncl .
 ln -sf ${datadir}/SZDistrictSurface.nc .
@@ -114,7 +104,7 @@ cd ..
 echo "BAB"
 test -d BAB || mkdir -p BAB
 cd BAB
-$1/script/cpln_hydrofile_here.sh ${cycledir}/ RTOUT_DOMAIN1 ln $cycle $plot_begin_hour $plot_end_hour
+$1/script/cpln_hydrofile_here.sh ${cycledir}/ RTOUT_DOMAIN1 ln $cycle -6 24
 ln -sf ${scriptdir}/plot_tilevars.ncl .
 ln -sf ${scriptdir}/gsn_add_shapefile_polylines_for_v600.ncl .
 ln -sf ${datadir}/SZDistrictSurface.nc .

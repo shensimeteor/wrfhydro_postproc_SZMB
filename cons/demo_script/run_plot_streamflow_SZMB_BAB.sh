@@ -1,6 +1,6 @@
 #!/bin/bash
-if [ $# -lt 7 ]; then
-    echo "arguments: hydro_root_dir/{ncl,data,cons}; cycle_dir; work_dir; web_dir/{cycles,gifs}; cycle; plot_begin_hour; plot_end_hour"
+if [ $# -lt 5 ]; then
+    echo "arguments: hydro_root_dir/{ncl,data,cons}; cycle_dir; work_dir; web_dir/{cycles,gifs}; cycle"
     exit
 fi
 
@@ -11,8 +11,6 @@ datadir="$1/data/"
 consdir="$1/cons/"
 webdir=$4
 cycle=$5
-plot_begin_hour=$6
-plot_end_hour=$7
 
 date
 echo "scriptdir: $scriptdir"
@@ -20,14 +18,7 @@ echo "cycledir:  $cycledir"
 echo "workdir:   $workdir"
 echo "webdir:    $webdir"
 echo "cycle:     $cycle"
-echo "plot_begin_hour:  $plot_begin_hour"
-if [ $plot_begin_hour -gt 0 ]; then
-    echo "- Warning: usually plot_begin_hour should be <= 0 !!"
-fi
-echo "plot_end_hour: $plot_end_hour"
-if [ $plot_end_hour -lt 0 ]; then
-    echo "- Warning: usually plot_end_hour should be >=0 !!"
-fi
+echo ""
 #normal
 test -d $workdir || mkdir -p $workdir
 cd ${workdir}
@@ -38,7 +29,7 @@ cd BAB
 test -d before_overlay || mkdir -p before_overlay
 cd before_overlay
 echo "before_overlay"
-$1/script/cpln_hydrofile_here.sh ${cycledir}/ CHRTOUT_DOMAIN1 ln $cycle $plot_begin_hour $plot_end_hour
+$1/script/cpln_hydrofile_here.sh ${cycledir}/ CHRTOUT_DOMAIN1 ln $cycle -6 24
 #D4: 2250x2250: 1352x1324+449+408  => 678x591
 #SZ: 2250x2250: 1352x920+449+609   => 1080x625
 #TG: 2250x2250: 1100x1480+570+320  => 695x761

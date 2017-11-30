@@ -1,0 +1,9 @@
+CEPRI-C1: use cepric1_rtfdda_hydro_postproc.pl
+  in ncl, ln -sf ncl/convert_and_copyout_CEPRIC1.ncl ncl/convert_and_copyout.ncl
+          ln -sf ncl/convert_and_copyout_forTS_CEPRIC1.ncl ncl/convert_and_copyout_forTS.ncl
+  in script, ln -sf script/convert_ps_to_png_bydefault.sh script/convert_ps_to_png_vianode30.sh 
+     
+SZMB:  use rtfdda_hydro_postproc.pl
+  in ncl, ln -sf ncl/convert_and_copyout_SZMB.ncl ncl/convert_and_copyout.ncl
+          ln -sf ncl/convert_and_copyout_forTS_SZMB.ncl ncl/convert_and_copyout_forTS.ncl
+  in script, ln -sf script/convert_ps_to_png_vianode30_SZMB.sh script/convert_ps_to_png_vianode30.sh

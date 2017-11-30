@@ -4,7 +4,6 @@ load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/contributed.ncl"
 load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/shea_util.ncl"
 load "gsn_add_shapefile_polylines_for_v600.ncl"
 load "ncl_future_func.ncl"
-load "convert_and_copyout_forStreamflow.ncl"
 
 ; plot with cusomized nodeidx and area lon/lat 
 ; input: srcfilename (pattern to ls); 
@@ -362,7 +361,6 @@ xleg = (/0.55,0.55,0.55,0.55,0.55, 0.65,0.65,0.65,0.65,0.65/)
   print("end frame")
   delete(wks)
   
-;  convert_and_copyout_forStreamflow(fig_name+".png", copydirs) 
 
   end do
 
