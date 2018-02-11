@@ -1,0 +1,100 @@
+#!/usr/bin/perl -wT 
+# *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
+# ** Copyright UCAR (c) [RAP] 1996 - 2005. All Rights Reserved.
+# *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*
+# list_ugui:dirs:  RS Ruttenberg <becky@ucar.edu> Thu Oct 13 16:51:38 GMT 2005
+# helper script to allow ugui to display unique cycle runs - reads the cycle
+# dir and displays cycle directory as a link to ugui.
+
+use strict;
+use CGI; # Lincold Stein's CGI.pm perl module - http://stein.cshl.org/WWW/CGI/
+
+my $web_input = new CGI; # gets form input fields into one CGI object
+
+my $range = $web_input->url_param('range');
+my $script = $web_input->url_param('script');
+if (! $script) {
+    $script="ugui_png_mean3_rupps";
+}
+my $script_default="ugui_png_mean3_rupps";
+#$range = "ens/GWRUPPS/GFS_WCTRL";
+my $image_root = "/data01/home/fdda/apache/htdocs/images/${range}/cycles";
+my (@image_dirs, $image_dir);
+
+# other variable declarations
+
+# open web page for writing so that we can write status messages to screen
+  print $web_input->header();
+  print $web_input->start_html(-title=>"RT-FDDA Cycles");
+
+opendir(IMAGES, $image_root ) || &Exit("Can't open $image_root");
+@image_dirs = grep (!/^\.\.?$/, readdir(IMAGES));
+closedir(IMAGES);
+
+my %ishydro={};
+my $dir;
+@image_dirs = reverse sort @image_dirs;
+for $dir (@image_dirs) {
+    if (-e "$image_root/$dir/flag.hydro_added") {
+        $ishydro{$dir}="H";
+    }else{
+        $ishydro{$dir}="";
+    }
+}
+        
+
+print <<DONE;
+  
+<P ALIGN="LEFT">
+<B><FONT FACE="Times New Roman,Times"><FONT SIZE=+2>
+  RT-FDDA Cycles </FONT></FONT></B>
+<BR><IMG SRC="/images/blue_line.gif" HEIGHT=2 WIDTH=400>
+
+<P ALIGN="LEFT">
+<B><FONT FACE="Times New Roman,Times" SIZE=+1>Available Cycles:  </FONT></B>
+
+<table border width=50% cellspacing=0 cellpadding=5 cols=6>
+<tr>
+DONE
+
+my $n_column=6;
+my $count=0;
+my $image_dir;
+foreach $image_dir (@image_dirs) {
+   if ( $image_dir=~/(\d+)$/) {
+       $count+=1;
+       if($ishydro{$image_dir} eq "H"){
+           print "<td align=center><a href=/cgi-bin/model/$script?range=${range}/cycles/${image_dir}>$image_dir</a>  $ishydro{$image_dir} </td> \n";
+       }else{
+           print "<td align=center><a href=/cgi-bin/model/$script_default?range=${range}/cycles/${image_dir}>$image_dir</a>   </td> \n";
+       }
+
+       if ( $count % $n_column == 0 ){
+           print "</tr> \n <tr> \n";
+       }
+   }
+}  
+  if ( -d "$image_root/historical") {
+      print "</tr> \n <tr> \n <td> <a href=/images/${range}/cycles/historical>More Cycles </td> </tr>\n";
+  }
+  else{ print "</tr> \n"; }
+  print "</table>";
+  print $web_input->end_html();
+
+sub Exit {
+
+my $error_string = $_[0];
+print <<DONE;
+     
+<P ALIGN="LEFT">
+<B><FONT FACE="Times New Roman,Times"><FONT SIZE=+2>
+  UAE-Viz Error </FONT></FONT></B>
+<BR><IMG SRC="/images/blue_line.gif" HEIGHT=2 WIDTH=400>
+
+<P ALIGN="LEFT">
+<B><FONT FACE="Times New Roman,Times"><FONT SIZE=+1>
+  $error_string </FONT></FONT></B>
+DONE
+  print $web_input->end_html();
+  exit 1;
+} # end sub Exit

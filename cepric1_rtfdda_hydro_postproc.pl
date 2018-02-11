@@ -42,6 +42,9 @@ $LOG_DIR="$ENV{HOME}/data/cycles/$JOB_ID/zout/hydro_postproc/cyc$THIS_CYCLE";
 require "$CSH_DIR/common_tools.pl";
 system("test -d $WEB_DIR || mkdir -p $WEB_DIR");
 
+$plot_begin_hour=-12; #to modify
+$plot_end_hour=24;  #to modify
+
 system("test -d $LOG_DIR || mkdir -p $LOG_DIR");
 system("date");
 print("cycle: $THIS_CYCLE\n");
@@ -58,7 +61,7 @@ if ($flag =~ /Fail/){
 }
 #2). wait for 20* file finished
 $finaldate=&tool_date12_add("${THIS_CYCLE}00", 24, "hour");
-&wait_hydro_run($CYCLE_DIR, $finaldate, 12, 30);
+&wait_hydro_run($CYCLE_DIR, $finaldate, 8, 30);
 print("\n");
 
 #cp to workdir
@@ -73,48 +76,50 @@ if ( -e "$workdir/cycledata/flag.copy") {
 }
 print("\n");
 
-#link 6hr to cycles -- not on cepri-c1
-#$cmd="bash $HYDRO_ROOT/script/link_6hr_atmos_png_forcycle.sh $WEB_DIR $THIS_CYCLE -6";
+#link gifs atmos png to cycles -- not on cepri-c1
+#$cmd="bash $HYDRO_ROOT/script/link_old_atmos_png_forcycle.sh $WEB_DIR $THIS_CYCLE $plot_begin_hour";
 #print($cmd."\n");
 #system($cmd);
 #print("\n");
 
 #for Evapor (because it has no 24hour forecast), ln no_plots.gif there
-&copy_noplot_final_evapor($WEB_DIR, $THIS_CYCLE, ("d4", "d5", "TG", "GL"));
+&copy_noplot_final_evapor($WEB_DIR, $THIS_CYCLE, ("d4", "d5", "TG", "GL","BAB"));
 
 #plot
 #@plots=("timeseries");
-@plots=("precp", "tiles", "evapor", "streamflow_TG", "streamflow_SZ", "streamflow_GL", "streamflow_D4", "timeseries");
+@plots=("precp", "tiles", "evapor", "streamflow_TG", "streamflow_SZ", "streamflow_GL", "streamflow_D4", "streamflow_BAB", "timeseries");
+#@plots=("precp", "evapor", "tiles");
+#@plots=("timeseries");
 for $plot (@plots) {
     print((/"plot: $plot"/));
     if($plot eq "precp") {
         system("test -d $workdir/precp && rm -rf $workdir/precp");
-        $cmd="bash $HYDRO_ROOT/script/run_plot_precp_SZMB_alldom.sh $HYDRO_ROOT $workdir/cycledata $workdir/precp $WEB_DIR $THIS_CYCLE >& $LOG_DIR/log.precp &";
+        $cmd="bash $HYDRO_ROOT/script/run_plot_precp_SZMB_alldom.sh $HYDRO_ROOT $workdir/cycledata $workdir/precp $WEB_DIR $THIS_CYCLE $plot_begin_hour $plot_end_hour >& $LOG_DIR/log.precp &";
         print($cmd."\n");
         system($cmd);
     }
     if($plot eq "tiles") {
         system("test -d $workdir/tiles && rm -rf $workdir/tiles");
-        $cmd="bash $HYDRO_ROOT/script/run_plot_tiles_SZMB_alldom.sh $HYDRO_ROOT $workdir/cycledata $workdir/tiles $WEB_DIR $THIS_CYCLE >& $LOG_DIR/log.tiles &";
+        $cmd="bash $HYDRO_ROOT/script/run_plot_tiles_SZMB_alldom.sh $HYDRO_ROOT $workdir/cycledata $workdir/tiles $WEB_DIR $THIS_CYCLE $plot_begin_hour $plot_end_hour >& $LOG_DIR/log.tiles &";
         print($cmd."\n");
         system($cmd);
     }
     if($plot eq "evapor") {
         system("test -d $workdir/evapor && rm -rf $workdir/evapor");
-        $cmd="bash $HYDRO_ROOT/script/run_plot_evapor_SZMB_alldom.sh $HYDRO_ROOT $workdir/cycledata $workdir/evapor $WEB_DIR $THIS_CYCLE >& $LOG_DIR/log.evapor &";
+        $cmd="bash $HYDRO_ROOT/script/run_plot_evapor_SZMB_alldom.sh $HYDRO_ROOT $workdir/cycledata $workdir/evapor $WEB_DIR $THIS_CYCLE $plot_begin_hour $plot_end_hour >& $LOG_DIR/log.evapor &";
         print($cmd."\n");
         system($cmd);
     }
     if($plot =~ /streamflow/){
         ($temp, $dom)=split(/_/, $plot);
         system("test -d $workdir/streamflow/$dom && rm -rf $workdir/streamflow/$dom");
-        $cmd="bash $HYDRO_ROOT/script/run_plot_streamflow_SZMB_$dom.sh $HYDRO_ROOT $workdir/cycledata $workdir/streamflow $WEB_DIR $THIS_CYCLE >& $LOG_DIR/log.streamflow_$dom &";
+        $cmd="bash $HYDRO_ROOT/script/run_plot_streamflow_SZMB_$dom.sh $HYDRO_ROOT $workdir/cycledata $workdir/streamflow $WEB_DIR $THIS_CYCLE $plot_begin_hour $plot_end_hour >& $LOG_DIR/log.streamflow_$dom &";
         print($cmd."\n");
         system($cmd);
     }
     if($plot eq "timeseries"){
         system("test -d $workdir/timeseries && rm -rf $workdir/timeseries");
-        $cmd="bash $HYDRO_ROOT/script/run_plot_TimeSeries_SZMB.sh $HYDRO_ROOT $workdir/cycledata $workdir/timeseries $WEB_DIR $THIS_CYCLE >& $LOG_DIR/log.timeseries &";
+        $cmd="bash $HYDRO_ROOT/script/run_plot_TimeSeries_SZMB.sh $HYDRO_ROOT $workdir/cycledata $workdir/timeseries $WEB_DIR $THIS_CYCLE $plot_begin_hour $plot_end_hour >& $LOG_DIR/log.timeseries &";
         print($cmd."\n");
         system($cmd);
     }

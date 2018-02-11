@@ -1,40 +1,47 @@
-Fri Nov 17 15:10:02 GMT 2017
-cycle: 2017111706
-hydro_root: /data02/home/fddanew/data/GMODJOBS/GWRUPPS//hydro_postproc/
-workdir: /dev/shm/hydro_postproc/GWRUPPS/GFS_WCTRL/2017111706
+Thu Jan 25 16:55:01 UTC 2018
+cycle: 2018012512
+hydro_root: /home/fdda-ops/data/GMODJOBS/GERUPPS//hydro_postproc/
+workdir: /dev/shm/hydro_postproc/GERUPPS/GFS_WCTRL/2018012512
 
 iwait=1, sleep 30..
 iwait=1, sleep 30..
-/data02/home/fddanew/data/cycles/GWRUPPS/hydro/cycles/GFS_WCTRL/2017111706/201711180600.RTOUT_DOMAIN1 is finished, jump out of waiting --
+iwait=2, sleep 30..
+iwait=3, sleep 30..
+iwait=4, sleep 30..
+iwait=5, sleep 30..
+iwait=6, sleep 30..
+iwait=7, sleep 30..
+iwait=8, sleep 30..
+iwait=9, sleep 30..
 
 to copy CYCLE_DATA to workdir
-bash /data02/home/fddanew/data/GMODJOBS/GWRUPPS//hydro_postproc//script/link_6hr_atmos_png_forcycle.sh /data02/home/fddanew/data/cycles/GWRUPPS/GFS_WCTRL/postprocs/web 2017111706 -6
-dat: 2017111700
-dat: 2017111701
-dat: 2017111702
-dat: 2017111703
-dat: 2017111704
-dat: 2017111705
-
-sh: line 0: cd: /data02/home/fddanew/data/cycles/GWRUPPS/GFS_WCTRL/postprocs/web/cycles/2017111706/2017111806: No such file or directory
-sh: line 0: cd: /data02/home/fddanew/data/cycles/GWRUPPS/GFS_WCTRL/postprocs/web/cycles/2017111706/2017111806: No such file or directory
-sh: line 0: cd: /data02/home/fddanew/data/cycles/GWRUPPS/GFS_WCTRL/postprocs/web/cycles/2017111706/2017111806: No such file or directory
-sh: line 0: cd: /data02/home/fddanew/data/cycles/GWRUPPS/GFS_WCTRL/postprocs/web/cycles/2017111706/2017111806: No such file or directory
-bash /data02/home/fddanew/data/GMODJOBS/GWRUPPS//hydro_postproc//script/run_plot_precp_SZMB_alldom.sh /data02/home/fddanew/data/GMODJOBS/GWRUPPS//hydro_postproc/ /dev/shm/hydro_postproc/GWRUPPS/GFS_WCTRL/2017111706/cycledata /dev/shm/hydro_postproc/GWRUPPS/GFS_WCTRL/2017111706/precp /data02/home/fddanew/data/cycles/GWRUPPS/GFS_WCTRL/postprocs/web 2017111706 >& /data02/home/fddanew/data/cycles/GWRUPPS/zout/hydro_postproc/cyc2017111706/log.precp &
+sh: line 0: cd: /home/fdda-ops/data/cycles/GERUPPS/GFS_WCTRL/postprocs/web/cycles/2018012512/2018012612: No such file or directory
+sh: line 0: cd: /home/fdda-ops/data/cycles/GERUPPS/GFS_WCTRL/postprocs/web/gifs/2018012612: No such file or directory
+sh: line 0: cd: /home/fdda-ops/data/cycles/GERUPPS/GFS_WCTRL/postprocs/web/cycles/2018012512/2018012612: No such file or directory
+sh: line 0: cd: /home/fdda-ops/data/cycles/GERUPPS/GFS_WCTRL/postprocs/web/gifs/2018012612: No such file or directory
+sh: line 0: cd: /home/fdda-ops/data/cycles/GERUPPS/GFS_WCTRL/postprocs/web/cycles/2018012512/2018012612: No such file or directory
+sh: line 0: cd: /home/fdda-ops/data/cycles/GERUPPS/GFS_WCTRL/postprocs/web/gifs/2018012612: No such file or directory
+sh: line 0: cd: /home/fdda-ops/data/cycles/GERUPPS/GFS_WCTRL/postprocs/web/cycles/2018012512/2018012612: No such file or directory
+sh: line 0: cd: /home/fdda-ops/data/cycles/GERUPPS/GFS_WCTRL/postprocs/web/gifs/2018012612: No such file or directory
+sh: line 0: cd: /home/fdda-ops/data/cycles/GERUPPS/GFS_WCTRL/postprocs/web/cycles/2018012512/2018012612: No such file or directory
+sh: line 0: cd: /home/fdda-ops/data/cycles/GERUPPS/GFS_WCTRL/postprocs/web/gifs/2018012612: No such file or directory
+bash /home/fdda-ops/data/GMODJOBS/GERUPPS//hydro_postproc//script/run_plot_precp_SZMB_alldom.sh /home/fdda-ops/data/GMODJOBS/GERUPPS//hydro_postproc/ /dev/shm/hydro_postproc/GERUPPS/GFS_WCTRL/2018012512/cycledata /dev/shm/hydro_postproc/GERUPPS/GFS_WCTRL/2018012512/precp /home/fdda-ops/data/cycles/GERUPPS/GFS_WCTRL/postprocs/web 2018012512 -12 24 >& /home/fdda-ops/data/cycles/GERUPPS/zout/hydro_postproc/cyc2018012512/log.precp &
 ===================================
-bash /data02/home/fddanew/data/GMODJOBS/GWRUPPS//hydro_postproc//script/run_plot_tiles_SZMB_alldom.sh /data02/home/fddanew/data/GMODJOBS/GWRUPPS//hydro_postproc/ /dev/shm/hydro_postproc/GWRUPPS/GFS_WCTRL/2017111706/cycledata /dev/shm/hydro_postproc/GWRUPPS/GFS_WCTRL/2017111706/tiles /data02/home/fddanew/data/cycles/GWRUPPS/GFS_WCTRL/postprocs/web 2017111706 >& /data02/home/fddanew/data/cycles/GWRUPPS/zout/hydro_postproc/cyc2017111706/log.tiles &
+bash /home/fdda-ops/data/GMODJOBS/GERUPPS//hydro_postproc//script/run_plot_tiles_SZMB_alldom.sh /home/fdda-ops/data/GMODJOBS/GERUPPS//hydro_postproc/ /dev/shm/hydro_postproc/GERUPPS/GFS_WCTRL/2018012512/cycledata /dev/shm/hydro_postproc/GERUPPS/GFS_WCTRL/2018012512/tiles /home/fdda-ops/data/cycles/GERUPPS/GFS_WCTRL/postprocs/web 2018012512 -12 24 >& /home/fdda-ops/data/cycles/GERUPPS/zout/hydro_postproc/cyc2018012512/log.tiles &
 ===================================
-bash /data02/home/fddanew/data/GMODJOBS/GWRUPPS//hydro_postproc//script/run_plot_evapor_SZMB_alldom.sh /data02/home/fddanew/data/GMODJOBS/GWRUPPS//hydro_postproc/ /dev/shm/hydro_postproc/GWRUPPS/GFS_WCTRL/2017111706/cycledata /dev/shm/hydro_postproc/GWRUPPS/GFS_WCTRL/2017111706/evapor /data02/home/fddanew/data/cycles/GWRUPPS/GFS_WCTRL/postprocs/web 2017111706 >& /data02/home/fddanew/data/cycles/GWRUPPS/zout/hydro_postproc/cyc2017111706/log.evapor &
+bash /home/fdda-ops/data/GMODJOBS/GERUPPS//hydro_postproc//script/run_plot_evapor_SZMB_alldom.sh /home/fdda-ops/data/GMODJOBS/GERUPPS//hydro_postproc/ /dev/shm/hydro_postproc/GERUPPS/GFS_WCTRL/2018012512/cycledata /dev/shm/hydro_postproc/GERUPPS/GFS_WCTRL/2018012512/evapor /home/fdda-ops/data/cycles/GERUPPS/GFS_WCTRL/postprocs/web 2018012512 -12 24 >& /home/fdda-ops/data/cycles/GERUPPS/zout/hydro_postproc/cyc2018012512/log.evapor &
 ===================================
-bash /data02/home/fddanew/data/GMODJOBS/GWRUPPS//hydro_postproc//script/run_plot_streamflow_SZMB_TG.sh /data02/home/fddanew/data/GMODJOBS/GWRUPPS//hydro_postproc/ /dev/shm/hydro_postproc/GWRUPPS/GFS_WCTRL/2017111706/cycledata /dev/shm/hydro_postproc/GWRUPPS/GFS_WCTRL/2017111706/streamflow /data02/home/fddanew/data/cycles/GWRUPPS/GFS_WCTRL/postprocs/web 2017111706 >& /data02/home/fddanew/data/cycles/GWRUPPS/zout/hydro_postproc/cyc2017111706/log.streamflow_TG &
+bash /home/fdda-ops/data/GMODJOBS/GERUPPS//hydro_postproc//script/run_plot_streamflow_SZMB_TG.sh /home/fdda-ops/data/GMODJOBS/GERUPPS//hydro_postproc/ /dev/shm/hydro_postproc/GERUPPS/GFS_WCTRL/2018012512/cycledata /dev/shm/hydro_postproc/GERUPPS/GFS_WCTRL/2018012512/streamflow /home/fdda-ops/data/cycles/GERUPPS/GFS_WCTRL/postprocs/web 2018012512 -12 24 >& /home/fdda-ops/data/cycles/GERUPPS/zout/hydro_postproc/cyc2018012512/log.streamflow_TG &
 ===================================
-bash /data02/home/fddanew/data/GMODJOBS/GWRUPPS//hydro_postproc//script/run_plot_streamflow_SZMB_SZ.sh /data02/home/fddanew/data/GMODJOBS/GWRUPPS//hydro_postproc/ /dev/shm/hydro_postproc/GWRUPPS/GFS_WCTRL/2017111706/cycledata /dev/shm/hydro_postproc/GWRUPPS/GFS_WCTRL/2017111706/streamflow /data02/home/fddanew/data/cycles/GWRUPPS/GFS_WCTRL/postprocs/web 2017111706 >& /data02/home/fddanew/data/cycles/GWRUPPS/zout/hydro_postproc/cyc2017111706/log.streamflow_SZ &
+bash /home/fdda-ops/data/GMODJOBS/GERUPPS//hydro_postproc//script/run_plot_streamflow_SZMB_SZ.sh /home/fdda-ops/data/GMODJOBS/GERUPPS//hydro_postproc/ /dev/shm/hydro_postproc/GERUPPS/GFS_WCTRL/2018012512/cycledata /dev/shm/hydro_postproc/GERUPPS/GFS_WCTRL/2018012512/streamflow /home/fdda-ops/data/cycles/GERUPPS/GFS_WCTRL/postprocs/web 2018012512 -12 24 >& /home/fdda-ops/data/cycles/GERUPPS/zout/hydro_postproc/cyc2018012512/log.streamflow_SZ &
 ===================================
-bash /data02/home/fddanew/data/GMODJOBS/GWRUPPS//hydro_postproc//script/run_plot_streamflow_SZMB_GL.sh /data02/home/fddanew/data/GMODJOBS/GWRUPPS//hydro_postproc/ /dev/shm/hydro_postproc/GWRUPPS/GFS_WCTRL/2017111706/cycledata /dev/shm/hydro_postproc/GWRUPPS/GFS_WCTRL/2017111706/streamflow /data02/home/fddanew/data/cycles/GWRUPPS/GFS_WCTRL/postprocs/web 2017111706 >& /data02/home/fddanew/data/cycles/GWRUPPS/zout/hydro_postproc/cyc2017111706/log.streamflow_GL &
+bash /home/fdda-ops/data/GMODJOBS/GERUPPS//hydro_postproc//script/run_plot_streamflow_SZMB_GL.sh /home/fdda-ops/data/GMODJOBS/GERUPPS//hydro_postproc/ /dev/shm/hydro_postproc/GERUPPS/GFS_WCTRL/2018012512/cycledata /dev/shm/hydro_postproc/GERUPPS/GFS_WCTRL/2018012512/streamflow /home/fdda-ops/data/cycles/GERUPPS/GFS_WCTRL/postprocs/web 2018012512 -12 24 >& /home/fdda-ops/data/cycles/GERUPPS/zout/hydro_postproc/cyc2018012512/log.streamflow_GL &
 ===================================
-bash /data02/home/fddanew/data/GMODJOBS/GWRUPPS//hydro_postproc//script/run_plot_streamflow_SZMB_D4.sh /data02/home/fddanew/data/GMODJOBS/GWRUPPS//hydro_postproc/ /dev/shm/hydro_postproc/GWRUPPS/GFS_WCTRL/2017111706/cycledata /dev/shm/hydro_postproc/GWRUPPS/GFS_WCTRL/2017111706/streamflow /data02/home/fddanew/data/cycles/GWRUPPS/GFS_WCTRL/postprocs/web 2017111706 >& /data02/home/fddanew/data/cycles/GWRUPPS/zout/hydro_postproc/cyc2017111706/log.streamflow_D4 &
+bash /home/fdda-ops/data/GMODJOBS/GERUPPS//hydro_postproc//script/run_plot_streamflow_SZMB_D4.sh /home/fdda-ops/data/GMODJOBS/GERUPPS//hydro_postproc/ /dev/shm/hydro_postproc/GERUPPS/GFS_WCTRL/2018012512/cycledata /dev/shm/hydro_postproc/GERUPPS/GFS_WCTRL/2018012512/streamflow /home/fdda-ops/data/cycles/GERUPPS/GFS_WCTRL/postprocs/web 2018012512 -12 24 >& /home/fdda-ops/data/cycles/GERUPPS/zout/hydro_postproc/cyc2018012512/log.streamflow_D4 &
 ===================================
-bash /data02/home/fddanew/data/GMODJOBS/GWRUPPS//hydro_postproc//script/run_plot_TimeSeries_SZMB.sh /data02/home/fddanew/data/GMODJOBS/GWRUPPS//hydro_postproc/ /dev/shm/hydro_postproc/GWRUPPS/GFS_WCTRL/2017111706/cycledata /dev/shm/hydro_postproc/GWRUPPS/GFS_WCTRL/2017111706/timeseries /data02/home/fddanew/data/cycles/GWRUPPS/GFS_WCTRL/postprocs/web 2017111706 >& /data02/home/fddanew/data/cycles/GWRUPPS/zout/hydro_postproc/cyc2017111706/log.timeseries &
+bash /home/fdda-ops/data/GMODJOBS/GERUPPS//hydro_postproc//script/run_plot_streamflow_SZMB_BAB.sh /home/fdda-ops/data/GMODJOBS/GERUPPS//hydro_postproc/ /dev/shm/hydro_postproc/GERUPPS/GFS_WCTRL/2018012512/cycledata /dev/shm/hydro_postproc/GERUPPS/GFS_WCTRL/2018012512/streamflow /home/fdda-ops/data/cycles/GERUPPS/GFS_WCTRL/postprocs/web 2018012512 -12 24 >& /home/fdda-ops/data/cycles/GERUPPS/zout/hydro_postproc/cyc2018012512/log.streamflow_BAB &
+===================================
+bash /home/fdda-ops/data/GMODJOBS/GERUPPS//hydro_postproc//script/run_plot_TimeSeries_SZMB.sh /home/fdda-ops/data/GMODJOBS/GERUPPS//hydro_postproc/ /dev/shm/hydro_postproc/GERUPPS/GFS_WCTRL/2018012512/cycledata /dev/shm/hydro_postproc/GERUPPS/GFS_WCTRL/2018012512/timeseries /home/fdda-ops/data/cycles/GERUPPS/GFS_WCTRL/postprocs/web 2018012512 -12 24 >& /home/fdda-ops/data/cycles/GERUPPS/zout/hydro_postproc/cyc2018012512/log.timeseries &
 ===================================
 
 start monitor plot tasks
@@ -42,20 +49,4 @@ start monitor plot tasks
 --wait: 1 (60 second)
 --wait: 2 (60 second)
 --wait: 3 (60 second)
---wait: 4 (60 second)
---wait: 5 (60 second)
---wait: 6 (60 second)
---wait: 7 (60 second)
---wait: 8 (60 second)
---wait: 9 (60 second)
---wait: 10 (60 second)
---wait: 11 (60 second)
---wait: 12 (60 second)
---wait: 13 (60 second)
---wait: 14 (60 second)
---wait: 15 (60 second)
---wait: 16 (60 second)
---wait: 17 (60 second)
---wait: 18 (60 second)
---wait: 19 (60 second)
 All finished

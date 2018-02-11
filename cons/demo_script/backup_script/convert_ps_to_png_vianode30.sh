@@ -1,0 +1,1 @@
+convert_ps_to_png_bydefault.sh
