@@ -67,10 +67,16 @@ begin
          j2=0
      else
          if(dom_name .eq. "SZ") then
-             i1=388
-             i2=1357
-             j1=793
-             j2=186
+            ; new 111*111 hires domain
+              i1=277
+              i2=1149
+              j1=416
+              j2=962
+            ; old 100*100 hires domain
+            ; i1=388
+            ; i2=1357
+            ; j1=793
+            ; j2=186
           else
              print("only D4/SZ dom_name have predefined lonlat_list, please define lonlat_list in cmd-arg \n")
              exit

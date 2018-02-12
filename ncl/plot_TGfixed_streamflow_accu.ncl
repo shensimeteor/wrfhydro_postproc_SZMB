@@ -16,7 +16,7 @@ begin
         print((/"           ymax, copydir_list, cycle_date10(date10 formatted cycle), data_outfile"/))
         exit
     end if
-    nodes_idx_list="17751,18024,18286,16975,15568,14986" ; 0..4, inflow, 5, outflow
+    nodes_idx_list="7117,7215,6429,6758,6104,5933" ; 0..4, inflow, 5, outflow
 ;    nodes_name_list="NorWst,North,NorEst,East,SouEst,South,SumIn" ; 6 nodes + 1 sumIn
     nodes_name_list="A,B,C,D,E,F,SumIn"
     color_list="blue,green,red,cyan,orange,black,magenta" ; 6 nodes + 1 sumIn
@@ -68,7 +68,7 @@ begin
     delete(data3d)
 
     ;plot TS
-    fig_name="TG_streamflow_3hr_allnodes_ts"
+    fig_name="TGSK_streamflow_3hr_allnodes_ts"
     wks=gsn_open_wks("png", fig_name)
     res=True
     res@xyLineColors= colors
