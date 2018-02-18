@@ -169,7 +169,7 @@ ln -sf ${datadir}/geo_em.nc .
 ln -sf ${consdir}/SZSK*.txt .
 ln -sf $scriptdir/ncl_future_func.ncl .
 ln -sf $scriptdir/convert_and_copyout.ncl .
-cmd="ncl 'srcfilename=\"*.LDASOUT_DOMAIN1\"' 'dom_name=\"SZSK\"' 'lonlat_list=\"114.0793,114.1282,22.5508,22.5892\"' 'add_chan_border=\"SZSK\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' plot_evapor_Customize.ncl >& log.plot"
+cmd="ncl 'srcfilename=\"*.LDASOUT_DOMAIN1\"' 'dom_name=\"SZSK\"' 'lonlat_list=\"114.0755,114.2208,22.5472,22.6607\"' 'add_chan_border=\"SZSK\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' plot_evapor_Customize.ncl >& log.plot"
 echo "$cmd"
 bash -c "$cmd"
 cd ..
