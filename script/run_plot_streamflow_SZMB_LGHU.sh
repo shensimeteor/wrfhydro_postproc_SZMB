@@ -43,7 +43,7 @@ $1/script/cpln_hydrofile_here.sh ${cycledir}/ CHRTOUT_DOMAIN1 ln $cycle $plot_be
 #SZ: 2250x2250: 1352x920+449+609   ; 676x460+225+305 => 1080x625
 #TG: 2250x2250: 1100x1480+570+320  ; 550x740+285+160 => 695x761
 #GL: 2250x2250: 1210x1480+520+320  ; 605x740+260+160 =>  812x1037
-#LGHU: 2250x2250; 1048x1490+600+310 => 550x795
+#LGHU: 2250x2250: 1350x1270+450+320 => 769x829
 
 ln -sf ${datadir}/geo_em.nc .
 ln -sf ${scriptdir}/plot_streamflow_Customize_forTrans_noLegend2.ncl .
@@ -64,7 +64,7 @@ cd overlayGE
 ln -sf $consdir/pngs/LGHU/background.png .
 ln -sf $consdir/pngs/LGHU/legend.png .
 for png in $(ls ../before_overlay/*.png); do
-    convert +repage -transparent "rgb(255,255,255)" -crop 1048x1490+600+310  -resize  550x795! $png inter.png
+    convert +repage -transparent "rgb(255,255,255)" -crop 1350x1270+450+320  -resize 769x829! $png inter.png
     pngtitle=$(basename $png .png)
     convert -gravity south background.png inter.png -composite inter2.png
     convert -append inter2.png legend.png GE_${pngtitle}.png

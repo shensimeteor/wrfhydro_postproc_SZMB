@@ -207,7 +207,16 @@ begin
             var2dx@units="m3/m2"
             var2dx@long_name="soil total moist."
         else
-            var2dx=ff->$vars_to_plot(ivar)$
+            if(isfilevar(ff, vars_to_plot(ivar))) then
+                var2dx=ff->$vars_to_plot(ivar)$
+            else
+                if(isfilevar(ff, str_lower(vars_to_plot(ivar)))) then
+                    var2dx=ff->$str_lower(vars_to_plot(ivar))$
+                else
+                    print((/"Error, "+vars_to_plot(ivar)+" doesn't exist in "+fs(ifile)/))
+                    exit
+                end if
+            end if
         end if
         ;if SOIL_M N (N=1..4)
         titles=str_split(vars_to_plot(ivar), " ")

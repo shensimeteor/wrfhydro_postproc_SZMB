@@ -28,7 +28,7 @@ source $thisdir/datelib.sh
 echo $starth $endh
 for ((h=$starth; h<=$endh; h++)); do
     dat=$(date_add $cyc $h "hour")
-    file=$(ls $dir/${dat}*${postfix})
+    file=$(ls $dir/${dat}00*${postfix})
     if [ -n "$file" ]; then
         if [ "$cp_or_ln" == "cp" ]; then
             cp -f $file .

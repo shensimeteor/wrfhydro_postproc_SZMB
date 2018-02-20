@@ -42,14 +42,19 @@ $LOG_DIR="$ENV{HOME}/data/cycles/$JOB_ID/zout/hydro_postproc/cyc$THIS_CYCLE";
 require "$CSH_DIR/common_tools.pl";
 system("test -d $WEB_DIR || mkdir -p $WEB_DIR");
 
-$plot_begin_hour=-12; #to modify
-$plot_end_hour=24;  #to modify
+$plot_begin_hour=-3; #to modify, for 2d plot
+$plot_end_hour=12;  #to modify, for 2d plot
+#for time series, hardwired here
+#begin_hour: -24 (need copied old cycles data)
+#end_hour: 12
 
 system("test -d $LOG_DIR || mkdir -p $LOG_DIR");
 system("date");
 print("cycle: $THIS_CYCLE\n");
 print("hydro_root: $HYDRO_ROOT\n");
+print("cycle_dir: $CYCLE_DIR\n");
 print("workdir: $workdir\n");
+print("webdir: $WEB_DIR\n");
 print("\n");
 &clean_dir("/dev/shm/hydro_postproc/$JOB_ID/$MEM_NAME", 0);
 #wait for hydro files
@@ -60,7 +65,7 @@ if ($flag =~ /Fail/){
     exit;
 }
 #2). wait for 20* file finished
-$finaldate=&tool_date12_add("${THIS_CYCLE}00", 24, "hour");
+$finaldate=&tool_date12_add("${THIS_CYCLE}00", $plot_end_hour, "hour");
 &wait_hydro_run($CYCLE_DIR, $finaldate, 8, 30);
 print("\n");
 
@@ -69,10 +74,20 @@ system("test -d $workdir/cycledata || mkdir -p $workdir/cycledata");
 if ( -e "$workdir/cycledata/flag.copy") {
     print("hydro data already copied, skip \n");
 }else{
-    print("to copy CYCLE_DATA to workdir");
+    print("to copy CYCLE_DATA to workdir\n");
     chdir("$workdir/cycledata");
     system("ln -sf $CYCLE_DIR/forcing .");
-    system("cp -r $CYCLE_DIR/20* $workdir/cycledata/ && touch $workdir/cycledata/flag.copy");
+    system("cp -r $CYCLE_DIR/20*00.* $workdir/cycledata/ && touch $workdir/cycledata/flag.copy");
+    #to link older cycle's CHRTOUT_DOMAIN1, used by time series (-24 -- 12)
+    $cyc=$THIS_CYCLE;
+    for($dh=-6; $dh>= -18; $dh=$dh-6){
+        $cyc12=&tool_date12_add("${THIS_CYCLE}00", $dh, "hour");
+        $cyc=substr($cyc12,0,10);
+        print("cycle=$cyc \n");
+        $cycdir="$CYCLE_DIR/../$cyc";
+        system("$HYDRO_ROOT/script/cpln_hydrofile_here.sh $cycdir CHRTOUT_DOMAIN1 ln $cyc -5 0");
+        print("$HYDRO_ROOT/script/cpln_hydrofile_here.sh $cycdir CHRTOUT_DOMAIN1 ln $cyc -5 0 \n");
+    }
 }
 print("\n");
 
@@ -83,11 +98,11 @@ print("\n");
 #print("\n");
 
 #for Evapor (because it has no 24hour forecast), ln no_plots.gif there
-&copy_noplot_final_evapor($WEB_DIR, $THIS_CYCLE, ("d4", "d5", "TG", "GL","BAB"));
+#&copy_noplot_final_evapor($WEB_DIR, $THIS_CYCLE, ("d4", "d5", "TGSK", "GLHU", "LGHU", "MZHU", "PSHU", "SZSK", "SZFT"));
 
 #plot
 #@plots=("timeseries");
-@plots=("precp", "tiles", "evapor", "streamflow_TG", "streamflow_SZ", "streamflow_GL", "streamflow_D4", "streamflow_BAB", "timeseries");
+@plots=("precp", "tiles", "evapor",  "streamflow_SZ", "streamflow_D4", "streamflow_TGSK", "streamflow_GLHU", "streamflow_LGHU", "streamflow_MZHU", "streamflow_PSHU", "streamflow_SZSK", "streamflow_SZFT", "timeseries");
 #@plots=("precp", "evapor", "tiles");
 #@plots=("timeseries");
 for $plot (@plots) {
@@ -119,7 +134,7 @@ for $plot (@plots) {
     }
     if($plot eq "timeseries"){
         system("test -d $workdir/timeseries && rm -rf $workdir/timeseries");
-        $cmd="bash $HYDRO_ROOT/script/run_plot_TimeSeries_SZMB.sh $HYDRO_ROOT $workdir/cycledata $workdir/timeseries $WEB_DIR $THIS_CYCLE $plot_begin_hour $plot_end_hour >& $LOG_DIR/log.timeseries &";
+        $cmd="bash $HYDRO_ROOT/script/run_plot_TimeSeries_SZMB.sh $HYDRO_ROOT $workdir/cycledata $workdir/timeseries $WEB_DIR $THIS_CYCLE -24 12 >& $LOG_DIR/log.timeseries &";
         print($cmd."\n");
         system($cmd);
     }
@@ -215,7 +230,6 @@ sub copy_noplot_final_evapor{
         }
   }
 1;
-
 
 
 

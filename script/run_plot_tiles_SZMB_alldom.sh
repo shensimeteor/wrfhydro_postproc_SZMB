@@ -144,9 +144,9 @@ cmd="ncl 'srcfilename=\"*.RTOUT_DOMAIN1\"' 'dom_name=\"PSHU\"' 'lonlat_list=\"11
 bash -c "$cmd"
 cd ..
 #MZHU
-echo "MZSH"
-test -d MZSH || mkdir -p MZSH
-cd MZSH
+echo "MZHU"
+test -d MZHU || mkdir -p MZHU
+cd MZHU
 $1/script/cpln_hydrofile_here.sh ${cycledir}/ RTOUT_DOMAIN1 ln $cycle $plot_begin_hour $plot_end_hour
 ln -sf ${scriptdir}/plot_tilevars.ncl .
 ln -sf ${scriptdir}/gsn_add_shapefile_polylines_for_v600.ncl .
@@ -156,8 +156,8 @@ ln -sf $scriptdir/smooth_convolution.ncl .
 ln -sf $scriptdir/ncl_future_func.ncl .
 ln -sf $scriptdir/convert_and_copyout.ncl .
 ln -sf ${datadir}/geo_em.nc .
-ln -sf ${consdir}/MZSH*.txt .
-cmd="ncl 'srcfilename=\"*.RTOUT_DOMAIN1\"' 'dom_name=\"MZSH\"' 'lonlat_list=\"113.7877,113.9444,22.6994,22.8472\"' 'add_chan_border=\"MZSH\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' plot_tilevars.ncl"
+ln -sf ${consdir}/MZHU*.txt .
+cmd="ncl 'srcfilename=\"*.RTOUT_DOMAIN1\"' 'dom_name=\"MZHU\"' 'lonlat_list=\"113.7877,113.9444,22.6994,22.8472\"' 'add_chan_border=\"MZHU\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' plot_tilevars.ncl"
 bash -c "$cmd"
 cd ..
 #SZSK
