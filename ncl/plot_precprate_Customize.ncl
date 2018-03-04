@@ -6,7 +6,7 @@ load "gsn_add_shapefile_polylines_for_v600.ncl"
 load "ncl_future_func.ncl"
 load "convert_and_copyout.ncl"
 ; for SZMB machine realtime 
-
+; must be run with ncl version >= 6.2.0, res@cnConstFEnableFill, res@cnConstFLabelOn
 undef("read_ascii_lonlat")
 ;return lonlat(:,2), first column is lon, last column is lat
 function read_ascii_lonlat(asciifile)
@@ -245,7 +245,9 @@ begin
      res@cnLevelSelectionMode        = "ExplicitLevels"
      res@cnLevels  =  (/0.1,1,2.,5,7.5,10,15,20,25,30,40,50,60,75,100/)
      nbval = dimsizes (res@cnLevels)
-     res@cnFillColors     = floattoint(fspan(2,17,nbval+1)) 
+     res@cnFillColors     = floattoint(fspan(2,17,nbval+1))
+     res@cnConstFLabelOn  = False
+     res@cnConstFEnableFill =True
 
      res@gsnLeftString               = ""
      res@gsnRightString              = ""
@@ -325,9 +327,9 @@ begin
      lnres             = True   
      lnres@gsLineColor     = "gray20" 
      lnres@gsLineThicknessF    = 1.5
-     if(dom_name .ne. "D4") then
+     ;if(dom_name .ne. "D4") then
          map_SZD = gsn_add_shapefile_polylines(wks,map,"./SZDistrictSurface.nc",lnres)
-     end if
+    ; end if
 
      if(isvar("add_chan_border")) then
         if(add_chan_border .eq. "TGall") then

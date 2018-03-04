@@ -8,6 +8,7 @@ load "smooth_convolution.ncl"
 load "ncl_future_func.ncl"
 load "convert_and_copyout.ncl"
 
+; run with version > 6.2.0 (ncl)
 
 undef("read_ascii_lonlat")
 ;return lonlat(:,2), first column is lon, last column is lat
@@ -253,6 +254,8 @@ begin
         res@cnFillMode = "RasterFill"
         res@cnLinesOn                   = False
         res@cnLineLabelsOn              = False
+        res@cnConstFLabelOn  = False
+        res@cnConstFEnableFill =True
         ;;
         res@cnLevelSelectionMode="AutomaticLevels"
         if(vars_to_plot(ivar) .eq. "SFCHEADSUBRT") then

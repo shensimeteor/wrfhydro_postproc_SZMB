@@ -67,10 +67,16 @@ begin
          j2=0
      else
          if(dom_name .eq. "SZ") then
-             i1=388
-             i2=1357
-             j1=793
-             j2=186
+             ;new domain
+             i1=277
+             i2=1149
+             j1=564;   962
+             j2=18;  416
+             ;old domain
+             ;i1=388
+             ;i2=1357
+             ;j1=793
+             ;j2=186
           else
              print("only D4/SZ dom_name have predefined lonlat_list, please define lonlat_list in cmd-arg \n")
              exit
@@ -97,7 +103,7 @@ begin
      var2d@_FillValue=-9999
      print((/vars_to_plot(ivar)+ " max:"+max(var2d)+" min:"+min(var2d)/))
      varname=str_sub_str(vars_to_plot(ivar), " ", "_")
-     pngfile=varname+"_"+dom_name
+     pngfile=dom_name+"_"+varname
      wks = gsn_open_wks("png",pngfile)
 ;     gsn_define_colormap(wks, "MPL_terrain")
 ;     gsn_define_colormap(wks, "BlAqGrYeOrRe")
@@ -110,29 +116,55 @@ begin
      res@cnFillOn                    = True
      res@cnLinesOn                   = False
      res@cnLineLabelsOn              = False
+     res@cnLevelSelectionMode = "AutomaticLevels"
      if(vars_to_plot(ivar) .eq. "TOPOGRAPHY") then
-         if(dom_name .eq. "GL") then
+         if(dom_name .eq. "TGSK") then
              res@cnLevelSelectionMode="ExplicitLevels"
-             res@cnLevels=fspan(30,510,17)
-             res@cnFillColors=tointeger(fspan(32, 4, 18))
-         else
-            if(dom_name .eq. "TG") then
-               res@cnLevelSelectionMode="ExplicitLevels"
-               res@cnLevels=fspan(0,320,17)
-               res@cnFillColors=tointeger(fspan(32, 4, 18))
-            else
-                if(dom_name .eq. "D4") then
-                    res@cnLevels=fspan(0, 950, 20)
-                    res@cnFillColors=tointeger(fspan(32, 4, 21))
-                else
-                    if(dom_name .eq. "SZ") then
-                        res@cnLevels=fspan(0, 950, 20)
-                        res@cnFillColors=tointeger(fspan(32, 4, 21))
-                    else
-                        print("Warn, dom_name not recoginized, use automatic levelselection for Terrain")
-                    end if
-                end if
-            end if
+             res@cnLevels=fspan(0,510,18)
+             res@cnFillColors=tointeger(fspan(32, 4, 19))
+         end if
+         if(dom_name .eq. "GLHU") then
+             res@cnLevelSelectionMode="ExplicitLevels"
+             res@cnLevels=fspan(30,420,14)
+             res@cnFillColors=tointeger(fspan(32, 4, 15))
+         end if
+         if(dom_name .eq. "LGHU") then
+             res@cnLevelSelectionMode="ExplicitLevels"
+             res@cnLevels=fspan(30,270,13)
+             res@cnFillColors=tointeger(fspan(32, 4, 14))
+         end if
+         if(dom_name .eq. "PSHU") then
+             res@cnLevelSelectionMode="ExplicitLevels"
+             res@cnLevels=fspan(30,630,21)
+             res@cnFillColors=tointeger(fspan(32, 4, 22))
+         end if
+         if(dom_name .eq. "MZHU") then
+             res@cnLevelSelectionMode="ExplicitLevels"
+             res@cnLevels=fspan(0,420,15)
+             res@cnFillColors=tointeger(fspan(32, 4, 16))
+         end if
+         if(dom_name .eq. "SZSK") then
+             res@cnLevelSelectionMode="ExplicitLevels"
+             res@cnLevels=fspan(40, 880, 22)
+             res@cnFillColors=tointeger(fspan(32, 4, 23))
+         end if
+         if(dom_name .eq. "SZFT") then
+             res@cnLevelSelectionMode="ExplicitLevels"
+             res@cnLevels=fspan(0, 340, 18) 
+             res@cnFillColors=tointeger(fspan(32, 4, 19))
+         end if
+         if(dom_name .eq. "D4") then
+             res@cnLevelSelectionMode="ExplicitLevels"
+             res@cnLevels=fspan(0, 950, 20)
+             res@cnFillColors=tointeger(fspan(32, 4, 21))
+         end if
+         if(dom_name .eq. "SZ") then
+             res@cnLevelSelectionMode="ExplicitLevels"
+             res@cnLevels=fspan(0, 950, 20)
+             res@cnFillColors=tointeger(fspan(32, 4, 21))
+         end if
+         if(res@cnLevelSelectionMode .eq. "AutomaticLevels") then
+             print((/"Warning, dom_name not specified, or not supported, -> use automatic levels"/))
         end if
      end if
 
@@ -150,7 +182,7 @@ begin
      res@mpOceanFillColor            = 5
      res@mpLandFillColor             = "transparent"
      res@mpFillDrawOrder             = "PreDraw"
-     res@mpOutlineOn = "False"
+     res@mpOutlineOn = "True"
      res@mpOutlineBoundarySets       = "National"
      res@mpOutlineDrawOrder  = "PostDraw"
      res@mpDataBaseVersion     = "HighRes"          ; Default is LowRes
@@ -185,7 +217,7 @@ begin
      lnres@gsLineThicknessF    = 1.5
      map_SZD = gsn_add_shapefile_polylines(wks,map,"./SZDistrictSurface.nc",lnres)
      ; add channel order
-     gg=addfile(chanfilename, "r")
+     gg=addfile(chanfilename+".nc", "r")
      if(isvar("nodeidx")) then
          lat    = gg->latitude(nodeidx)
          lon    = gg->longitude(nodeidx)

@@ -5,6 +5,7 @@ load "$NCARG_ROOT/lib/ncarg/nclscripts/csm/shea_util.ncl"
 load "gsn_add_shapefile_polylines_for_v600.ncl"
 load "ncl_future_func.ncl"
 load "convert_and_copyout.ncl"
+; for SZMB machine realtime 
 
 undef("read_ascii_lonlat")
 ;return lonlat(:,2), first column is lon, last column is lat
@@ -111,7 +112,7 @@ begin
      print((/"must provide: srcfilename .."/))
      print((/"opional: lonlat_list = lon1,lon2,lat1,lat2 .."/))
      print((/"    dom_name ( predefined: SZ, D4)"/))
-     print((/"    add_chan_border (predefined: TGall,TG,GL,...)"/))
+     print((/"    add_chan_border (predefined: TGall, TG, GL)"/))
      print((/"    copydir_list=png_copy_dir1,png_copy_dir2..."/))
      exit
  end if
@@ -123,6 +124,7 @@ begin
  else
      copydirs=str_split(copydir_list, ",")
  end if
+    
 ; ===== terrain stuff =====
  terrain_file = "geo_em.nc"
  fall   =addfile(terrain_file,"r")
@@ -159,12 +161,9 @@ begin
  num_fs = dimsizes(fs)
  got_ij=0
  do ifile = 0, num_fs-1, 1
+     print("Now for "+fs(ifile))
      ff = addfile(fs(ifile)+".nc","r")
-     var2d=ff->ECAN+ff->ETRAN+ff->EDIR
-     copy_VarMeta(ff->ECAN,var2d)
-     var2d@_FillValue=-9999
-     var2d=where(var2d .le. -1e5, var2d@_FillValue, var2d)
-
+     var2d=ff->RAINRATE
      var2d=var2d * 3600 ; convert to mm/h
      var2d@lon2d=xlon
      var2d@lat2d=xlat
@@ -177,9 +176,9 @@ begin
      print("For file "+fs(ifile)+" ymdh is "+ymdh)
 
 ;    ===== plot map background =====
-     fig_name="Evapor_"+dom_name+"_valid_at_"+ymdh
+     fig_name="RainRate_"+dom_name+"_valid_at_"+ymdh
      wks = gsn_open_wks("png",fig_name)
-     gsn_define_colormap(wks, "GMT_drywet")
+     gsn_define_colormap(wks, "prcp_1")
      
      res	= True
      if(got_ij .eq. 0) then
@@ -244,9 +243,9 @@ begin
 ;    res@cnMaxLevelValF              = 800
 ;    res@cnLevelSpacingF             = 100
      res@cnLevelSelectionMode        = "ExplicitLevels"
-     res@cnLevels = fspan(0.05,1.5,30)
+     res@cnLevels  =  (/0.1,1,2.,5,7.5,10,15,20,25,30,40,50,60,75,100/)
      nbval = dimsizes (res@cnLevels)
-     res@cnFillColors     = floattoint(fspan(9,45,31))
+     res@cnFillColors     = floattoint(fspan(2,17,nbval+1)) 
 
      res@gsnLeftString               = ""
      res@gsnRightString              = ""
@@ -254,8 +253,6 @@ begin
      res@cnFillOn                    = True
      res@cnLinesOn                   = False
      res@cnLineLabelsOn              = False
-     res@cnConstFLabelOn  = False
-     res@cnConstFEnableFill =True
 
      res@lbLabelStride               = 20
      res@lbBoxLinesOn                = False
@@ -279,30 +276,31 @@ begin
 
 
      res@mpFillOn                    = False
-     if(dom_name .eq. "D4" .or. dom_name .eq. "SZ") then
-         res@mpOutlineOn   = True
-     else
-         res@mpOutlineOn   = False
-     end if
 ;    res@mpOutlineDrawOrder          = "PostDraw"
      res@mpOceanFillColor            = 5
      res@mpLandFillColor             = "transparent"
-     res@mpFillDrawOrder             = "PreDraw"
-     res@mpOutlineDrawOrder  = "PostDraw"
+;     res@mpFillDrawOrder             = "PreDraw"
+     res@mpOutlineBoundarySets       = "National"
+;     res@mpOutlineDrawOrder  = "PostDraw"
 ;    res@mpOutlineSpecifiers = (/"China:states"/)
 ;    res@mpDataBaseVersion     = "MediumRes"          ; Default is LowRes
      res@mpDataBaseVersion     = "HighRes"          ; Default is LowRes
-     res@mpDataResolution   = "Finest"
      res@mpGeophysicalLineThicknessF	= 1.5
      res@mpGeophysicalLineColor = "black"
-     res@mpOutlineBoundarySets       = "AllBoundaries"
+     if(dom_name .eq. "D4" .or. dom_name .eq. "SZ") then
+        res@mpOutlineOn=True 
+     else
+        res@mpOutlineOn=False
+     end if
+     
+
      res@mpGridLineDashPattern  = 2
      res@pmTickMarkDisplayMode  = "Always"
      res@tmYROn                 = False
      res@tmXTOn                 = False
 
 ;    res@tiMainString           = "streamflow 10**2 m**3/s"
-     res@tiMainString           = "Evapor-Rate (mm/h) valid at "+ymdh+"Z"
+     res@tiMainString           = "RainRate (mm/h) valid at "+ymdh+"Z"
      res@tiMainFontHeightF      = 0.020              ; smaller title
 
      res@gsnAddCyclic           = False
@@ -318,7 +316,7 @@ begin
      res@pmLabelBarWidthF        = 0.70
      res@pmLabelBarHeightF       = 0.1
 ;     res@lbLabelAutoStride    = True
-     res@lbLabelStride = 2
+     res@lbLabelStride = 1
      res@lbLabelFontHeightF      = 0.012
 ;    drawNDCGrid(wks)
 
@@ -327,9 +325,9 @@ begin
      lnres             = True   
      lnres@gsLineColor     = "gray20" 
      lnres@gsLineThicknessF    = 1.5
-;     if(dom_name .ne. "D4") then
+     if(dom_name .ne. "D4") then
          map_SZD = gsn_add_shapefile_polylines(wks,map,"./SZDistrictSurface.nc",lnres)
-;     end if
+     end if
 
      if(isvar("add_chan_border")) then
         if(add_chan_border .eq. "TGall") then
@@ -342,7 +340,11 @@ begin
      draw(map)
      frame(wks)
      delete(wks)
-      convert_and_copyout(fig_name+".png", copydirs)
+;     system("convert -alpha off -trim +repage -density 150% "+fig_name+".png "+fig_name+".png")
+    ; system("rm -rf "+fig_name+".ps")
+     ;system("rm -f RainRate_SZ_valid_at_"+ymdh+".ps")
+
+    convert_and_copyout(fig_name+".png", copydirs) 
   end do
 
 end
