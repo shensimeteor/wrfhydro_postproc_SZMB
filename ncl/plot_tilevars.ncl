@@ -244,7 +244,6 @@ begin
         varname=str_sub_str(str_sub_str(vars_to_plot(ivar), " ", ""), "_", "")
         pngfile=varname+"_"+dom_name+"_valid_at_"+ymdh
         wks = gsn_open_wks("png",pngfile)
-        gsn_define_colormap(wks, "precip2_17lev")
 
         res	= True
         res@gsnDraw = False
@@ -260,8 +259,11 @@ begin
         res@cnLevelSelectionMode="AutomaticLevels"
         if(vars_to_plot(ivar) .eq. "SFCHEADSUBRT") then
             res@cnLevelSelectionMode = "ExplicitLevels"
-            res@cnLevels = (/1, 2, 5, 10, 20, 35, 50, 100, 200, 500, 1000/)
-            res@cnFillColors = (/2, 5, 6, 7, 9, 10, 13, 14, 15, 16, 17, 19/)
+            gsn_define_colormap(wks, "prcp_1")
+            res@cnLevels = (/20, 50, 100, 150, 200, 500, 2000, 3000/)
+            res@cnFillColors = (/0, 9, 10, 12, 13, 15, 16, 5, 1/)
+        else
+            gsn_define_colormap(wks, "precip2_17lev")
         end if
         if(vars_to_plot(ivar) .eq. "SoilMTotal") then
             res@cnLevelSelectionMode = "ExplicitLevels"

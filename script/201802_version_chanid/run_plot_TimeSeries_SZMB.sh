@@ -88,29 +88,27 @@ date_end=$(date_add $cycle $plot_end_hour "hour")
 tsdir="$webdir/tsdata/$cycle"
 test -d $tsdir  || mkdir -p $tsdir
 tspara=" 'data_outfile_prefix=\"$tsdir/TGSK_Accu_Streamflow_${cycle}\"' " ##for output ts txt file
-cmd="ncl plot_nodes_accu_streamflow_ts.ncl 'nodes_idx_list=\"5831\"'  'accu_hour_list=\"1,3,6,12,24\"'  'color_list=\"blue,cyan,green,orange,red\"' 'file_pattern=\"*.CHRTOUT_DOMAIN1\"' 'nodes_name_list=\"TGSK-F\"' 'start_date10=\"$date_start\"' 'end_date10=\"$date_end\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' 'ymax=1000' 'cycle_date10=\"$cycle\"' $tspara "
+cmd="ncl plot_nodes_accu_streamflow_ts.ncl 'nodes_idx_list=\"7117,7215,6429,6758,6104,5933\"'  'accu_hour_list=\"1,3,6,12,24\"'  'color_list=\"blue,cyan,green,orange,red\"' 'file_pattern=\"*.CHRTOUT_DOMAIN1\"' 'nodes_name_list=\"TGSK-A,TGSK-B,TGSK-C,TGSK-D,TGSK-E,TGSK-F\"' 'start_date10=\"$date_start\"' 'end_date10=\"$date_end\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' 'ymax=1000' 'cycle_date10=\"$cycle\"' $tspara "
 echo "$cmd"
 bash -c "$cmd"
 #GLHU
 tspara=" 'data_outfile_prefix=\"$tsdir/GLHU_Accu_Streamflow_${cycle}\"' "
-cmd="ncl plot_nodes_accu_streamflow_ts.ncl 'nodes_idx_list=\"8601,8105,7214,7221\"'  'accu_hour_list=\"1,3,6,12,24\"'  'color_list=\"blue,cyan,green,orange,red\"' 'file_pattern=\"*.CHRTOUT_DOMAIN1\"' 'nodes_name_list=\"GLHU-GL,GLHU-DL,GLHU-LH,GLHU-MZ\"' 'start_date10=\"$date_start\"' 'end_date10=\"$date_end\"' 'ymax=3500' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' 'cycle_date10=\"$cycle\"' $tspara "
+cmd="ncl plot_nodes_accu_streamflow_ts.ncl 'nodes_idx_list=\"9367,8818,7791,7798\"'  'accu_hour_list=\"1,3,6,12,24\"'  'color_list=\"blue,cyan,green,orange,red\"' 'file_pattern=\"*.CHRTOUT_DOMAIN1\"' 'nodes_name_list=\"GLHU-GL,GLHU-DL,GLHU-LH,GLHU-MZ\"' 'start_date10=\"$date_start\"' 'end_date10=\"$date_end\"' 'ymax=3500' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' 'cycle_date10=\"$cycle\"' $tspara "
 echo "$cmd"
 bash -c "$cmd"
-# #TG in,out 3hr accu streamflow
-#cmd="ncl plot_TGfixed_streamflow_accu.ncl 'file_pattern=\"*.CHRTOUT_DOMAIN1\"' 'start_date10=\"$date_start\"' 'end_date10=\"$date_end\"' 'ymax=250' 'cycle_date10=\"$cycle\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' "
-#echo "$cmd"
-#bash -c "$cmd"
+#TG in,out 3hr accu streamflow
+cmd="ncl plot_TGfixed_streamflow_accu.ncl 'file_pattern=\"*.CHRTOUT_DOMAIN1\"' 'start_date10=\"$date_start\"' 'end_date10=\"$date_end\"' 'ymax=250' 'cycle_date10=\"$cycle\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' "
+echo "$cmd"
+bash -c "$cmd"
 #TG in,out cont-accu streamflow
-#tspara=" 'data_outfile=\"$tsdir/TGSK_ContAccu_Streamflow_${cycle}.csv\"' "
-#cmd="ncl plot_TGfixed_streamflow_contaccu.ncl 'file_pattern=\"*.CHRTOUT_DOMAIN1\"' 'start_date10=\"$date_start\"' 'end_date10=\"$date_end\"' 'ymax=1000' 'cycle_date10=\"$cycle\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' $tspara "
-#echo "$cmd"
-#bash -c "$cmd"
+tspara=" 'data_outfile=\"$tsdir/TGSK_ContAccu_Streamflow_${cycle}.csv\"' "
+cmd="ncl plot_TGfixed_streamflow_contaccu.ncl 'file_pattern=\"*.CHRTOUT_DOMAIN1\"' 'start_date10=\"$date_start\"' 'end_date10=\"$date_end\"' 'ymax=1000' 'cycle_date10=\"$cycle\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' $tspara "
+echo "$cmd"
+bash -c "$cmd"
 
 #Other Reservoir, HeDao, Jiedao (10 + 4 + 4)
 tspara=" 'data_outfile_prefix=\"$tsdir/Other_Accu_Streamflow_${cycle}\"' "
-list_nodename="SK-GF,SK-ML,SK-ZK,SK-GJ,SK-CY,SK-FT,SK-DJ,SK-SZd,SK-YT,HD-MZH,HD-GLH,HD-PSH,HD-LGH,JD-MLL,JD-JHL,JD-HTP,JD-SLQ"
-list_nodeidx="5831,8601,7221,7214,8105,6848,5246,5020,9450,7234,10845,11704,5167,8625,11881,8601,8071,10007,5128,5510,6429,9578"
-cmd="ncl plot_nodes_accu_streamflow_ts.ncl 'nodes_idx_list=\"$list_nodeidx\"'  'accu_hour_list=\"1,3,6,12,24\"'  'color_list=\"blue,cyan,green,orange,red\"' 'file_pattern=\"*.CHRTOUT_DOMAIN1\"' 'nodes_name_list=\"$list_nodename\"' 'start_date10=\"$date_start\"' 'end_date10=\"$date_end\"' 'ymax=3500' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' 'cycle_date10=\"$cycle\"' $tspara "
+cmd="ncl plot_nodes_accu_streamflow_ts.ncl 'nodes_idx_list=\"7346,5248,5020,10216,7811,11611,12470,5167,6022,9366,12647,9367,8775,10773,5128,5538,6796,10344\"'  'accu_hour_list=\"1,3,6,12,24\"'  'color_list=\"blue,cyan,green,orange,red\"' 'file_pattern=\"*.CHRTOUT_DOMAIN1\"' 'nodes_name_list=\"SK-GF,SK-ML,SK-ZK,SK-GJ,SK-CY,SK-FT,SK-DJ,SK-SZd,SK-SZu,SK-YT,HD-MZH,HD-GLH,HD-PSH,HD-LGH,JD-MLL,JD-JHL,JD-HTP,JD-SLQ\"' 'start_date10=\"$date_start\"' 'end_date10=\"$date_end\"' 'ymax=3500' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' 'cycle_date10=\"$cycle\"' $tspara "
 echo "$cmd"
 bash -c "$cmd"
 
