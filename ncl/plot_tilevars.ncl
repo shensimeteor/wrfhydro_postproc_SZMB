@@ -260,7 +260,7 @@ begin
         if(vars_to_plot(ivar) .eq. "SFCHEADSUBRT") then
             res@cnLevelSelectionMode = "ExplicitLevels"
             gsn_define_colormap(wks, "prcp_1")
-            res@cnLevels = (/20, 50, 100, 150, 200, 500, 2000, 3000/)
+            res@cnLevels = (/20, 50, 100, 150, 200, 500, 2000, 10000/)
             res@cnFillColors = (/0, 9, 10, 12, 13, 15, 16, 5, 1/)
         else
             gsn_define_colormap(wks, "precip2_17lev")

@@ -32,9 +32,9 @@ fi
 test -d $workdir || mkdir -p $workdir
 cd ${workdir}
 #4D
-echo "PSHU"
-test -d PSHU || mkdir -p PSHU
-cd PSHU
+echo "LGHU"
+test -d LGHU || mkdir -p LGHU
+cd LGHU
 test -d before_overlay || mkdir -p before_overlay
 cd before_overlay
 echo "before_overlay"
@@ -43,7 +43,7 @@ $1/script/cpln_hydrofile_here.sh ${cycledir}/ CHRTOUT_DOMAIN1 ln $cycle $plot_be
 #SZ: 2250x2250: 1352x920+449+609   ; 676x460+225+305 => 1080x625
 #TG: 2250x2250: 1100x1480+570+320  ; 550x740+285+160 => 695x761
 #GL: 2250x2250: 1210x1480+520+320  ; 605x740+260+160 =>  812x1037
-#PSHU: 2250x2250; 1350x1440+450+330 => 424x443 
+#LGHU: 2250x2250: 1350x1270+450+320 => 769x829
 
 ln -sf ${datadir}/geo_em.nc .
 ln -sf ${scriptdir}/plot_streamflow_Customize_forTrans_noLegend2.ncl .
@@ -52,31 +52,30 @@ ln -sf ${scriptdir}/gsn_add_shapefile_polylines_for_v600.ncl .
 ln -sf ${datadir}/SZDistrictSurface.nc .
 ln -sf $scriptdir/ncl_future_func.ncl .
 ln -sf $scriptdir/convert_and_copyout_forStreamflow.ncl .
-ln -sf ${consdir}/nodeidx_PSHU.txt .
-echo ncl 'srcfilename="??????????00.CHRTOUT_DOMAIN1"' 'colorbar_maxvalue=50' 'dom_name="PSHU"' 'nodeidx_file="nodeidx_PSHU.txt"' 'lonlat_list="114.2565,114.3828,22.6119,22.7238"' plot_streamflow_Customize_forTrans_noLegend2.ncl  
-ncl 'srcfilename="??????????00.CHRTOUT_DOMAIN1"' 'colorbar_maxvalue=50' 'dom_name="PSHU"' 'nodeidx_file="nodeidx_PSHU.txt"' 'lonlat_list="114.2565,114.3828,22.6119,22.7238"' plot_streamflow_Customize_forTrans_noLegend2.ncl &> log.plt
+ln -sf ${consdir}/nodeidx_LGHU.txt .
+echo ncl 'srcfilename="??????????00.CHRTOUT_DOMAIN1"' 'colorbar_maxvalue=50' 'dom_name="LGHU"' 'nodeidx_file="nodeidx_LGHU.txt"' 'lonlat_list="114.1710,114.3132,22.6744,22.8033"' plot_streamflow_Customize_forTrans_noLegend2.ncl  
+ncl 'srcfilename="??????????00.CHRTOUT_DOMAIN1"' 'colorbar_maxvalue=50' 'dom_name="LGHU"' 'nodeidx_file="nodeidx_LGHU.txt"' 'lonlat_list="114.1710,114.3132,22.6744,22.8033"' plot_streamflow_Customize_forTrans_noLegend2.ncl &> log.plt
 bash $1/script/convert_ps_to_png_vianode30.sh *.ps 
 date
 cd ..
 echo "overlayGE &  cp to web"
 test -d overlayGE || mkdir -p overlayGE
 cd overlayGE
-ln -sf $consdir/pngs/PSHU/background.png .
-ln -sf $consdir/pngs/PSHU/legend.png .
+ln -sf $consdir/pngs/LGHU/background.png .
+ln -sf $consdir/pngs/LGHU/legend.png .
 for png in $(ls ../before_overlay/*.png); do
-    convert +repage -transparent "rgb(255,255,255)" -crop 1350x1440+450+330  -resize  424x443! $png inter.png
+    convert +repage -transparent "rgb(255,255,255)" -crop 1350x1270+450+320  -resize 769x829! $png inter.png
     pngtitle=$(basename $png .png)
     convert -gravity south background.png inter.png -composite inter2.png
     convert -append inter2.png legend.png GE_${pngtitle}.png
     datx=$(echo $pngtitle | cut -d "_" -f 5)
     test -d "$webdir/cycles/$cycle/$datx" || mkdir -p "$webdir/cycles/$cycle/$datx" 
-    echo cp GE_${pngtitle}.png $webdir/cycles/$cycle/$datx/PSHU_Streamflow.png
-    cp GE_${pngtitle}.png $webdir/cycles/$cycle/$datx/PSHU_Streamflow.png
+    echo cp GE_${pngtitle}.png $webdir/cycles/$cycle/$datx/LGHU_Streamflow.png
+    cp GE_${pngtitle}.png $webdir/cycles/$cycle/$datx/LGHU_Streamflow.png
     test -d "$webdir/gifs/$datx" || mkdir -p "$webdir/gifs/$datx" 
-    test -e "$webdir/gifs/$datx/PSHU_Streamflow.png" && rm -rf "$webdir/gifs/$datx/PSHU_Streamflow.png"
-    echo cp GE_${pngtitle}.png $webdir/gifs/$datx/PSHU_Streamflow.png
-    cp GE_${pngtitle}.png $webdir/gifs/$datx/PSHU_Streamflow.png
-   cp inter.png $webdir/gifs/$datx/PSHU_Streamflow_White.png
-   rm inter.png inter2.png
+    test -e "$webdir/gifs/$datx/LGHU_Streamflow.png" && rm -rf "$webdir/gifs/$datx/LGHU_Streamflow.png"
+    echo cp GE_${pngtitle}.png $webdir/gifs/$datx/LGHU_Streamflow.png
+    cp GE_${pngtitle}.png $webdir/gifs/$datx/LGHU_Streamflow.png
+    rm inter.png inter2.png
 done
-touch $workdir/finished.streamflow_PSHU
+touch $workdir/finished.streamflow_LGHU

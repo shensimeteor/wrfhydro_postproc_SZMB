@@ -1,0 +1,47 @@
+I have made several updates and bug fix.
+
+1. 2d plots (except streamflow) missed plot title, colorbar, map outline, etc. It is caused by missing of RANGS (ncl high resolution map outline data). It is fixed by preparing the RANGS data. I also upgrade ncl to v6.4.0 (see ~/.cshrc)
+
+2. color scale is updated for 2D water depth maps. (Modification is done in hydro_postproc/ncl/plot_tilevars.ncl, line 262-264)
+
+3. For updating of channel node index, the steps to make modifications are:
+
+a. re-generate "node_index" file (e.g. nodeidx_TGSK.txt) and "node_lonlat" file (e.g. TGSK_channode_lonlat.txt). This is done in Cheyenne (simply because matlab is available on Cheyenne). 
+    in: /glade/p/work/sishen/Matlabs/batch_output_chan_idx_lonlat/ (Please let me know if you have problem accessing the directory. I didn't release the write permission, but you can copy that directory out).
+    cp a CHRTOUT_DOMAIN1 file to the directory (i.e. 201803032015.CHRTOUT_DOMAIN1 here); 
+    the 7 subdomains definition (lon,lat, boundaries) are defined in subdom_definitions.txt. Since they are not changed here, no modification for this file.
+    make sure you have a directory "output"
+    run: ./matlab_run.sh batch_output.m
+    then you will get "node_index" files and "node_lonlat" files in output/.  Note, the node index starts on 1. (i.e. Fortran index, not NCL index)
+    then, cp the "node_index" files and "node_lonlat" files in cepri-c1:  /data1/fdda-ops/data/GMODJOBS/GERUFFS/hydro_postproc/cons/. (Replace the older files). 
+    After these, all the 2d plots will be updated automatically to use the new channel nodes.  
+    
+b. re-generate static plots 
+     in cepri-c1, /data1/fdda-ops/data/GMODJOBS/GERUFFS/hydro_postproc/ncl/non_realtime/static
+     cp a  CHRTOUT_DOMAIN1 file to the directory (i.e. 201803032015.CHRTOUT_DOMAIN1 here); 
+     in run_ncl.sh, update the chanfilename="201803032015.CHRTOUT_DOMAIN1", (to assign the new CHRTOUT_DOMAIN1 file,  201803032015.CHRTOUT_DOMAIN1 here); 
+     run: ./run_ncl.sh
+     then you will get <domain>_TOPOGRAPHY.png (total 9 pngs). 
+     Manually rename two of the 9 pngs: mv D4_TOPOGRAPHY.png d4_TOPOGRAPHY.png;  mv SZ_TOPOGRAPHY.png d5_TOPOGRAPHY.png. 
+     then cp the 9 pngs to the config directory in smac-c4. 
+     Hi, Wu, can you help me copy the 9 pngs in /data1/fdda-ops/data/GMODJOBS/GERUFFS/hydro_postproc/ncl/non_realtime/static/static_plots to the web config directory, to update the plots on website?
+
+c.  for Time-Series: we need to find the new nodes index in the old nodes position. So I wrote a python tool in /data1/fdda-ops/data/GMODJOBS/GERUFFS/hydro_postproc/utils/forChannelIDUpdate/.
+      source ~sishen/.cshrc first, or instead you can update the PATH environment variable: setenv PATH "/data1/fdda-ops/sishen/anaconda2/bin:$PATH"
+      prepare the old nodes index with their names, i.e. hydro_site_nodeidx.csv (node_index is put in the "node_index" titled column. index starts on 1)
+      run: ./get_node_lonlat_fromcsv.py -i hydro_site_nodeidx.csv -d 201802070100.CHRTOUT_DOMAIN1 -o output_lonlat.csv  . Here  201802070100.CHRTOUT_DOMAIN1 is the old CHRTOUT_DOMAIN1 file (i.e. the channel nodes are of old version). This script is to generate the lon/lat of channel nodes specified by the node_index, saved to output_lonlat.csv.
+      run:  ./get_node_index_from_lonlatcsv.py -i output_lonlat.csv -d 201803032015.CHRTOUT_DOMAIN1 -o x.csv. Here  201803032015.CHRTOUT_DOMAIN1 is the new CHRTOUT_DOMAIN1 file (with updated channel nodes). The script is to find the new index of channel nodes by matching lon/lat, saved to x.csv. In x.csv, some nodes index is set to "nan". This is because I set some threshold for the distance. If no nodes is found within the distance threshold, then it assumes the node is removed in the new version of CHRTOUT file.
+      run: paste hydro_site_nodeidx.csv x.csv -d ',' > all.csv to combine the old node index and new node index, into all.csv. So that it's clear to see the nodes' name, old_index, new_index.
+      Based on the new index of nodes, update the /data1/fdda-ops/data/GMODJOBS/GERUFFS/hydro_postproc/script/run_plot_TimeSeries_SZMB.sh. (Note in  run_plot_TimeSeries_SZMB.sh, node index passed to ncl is NCL's index, i.e. starts on 0. So it should be manually subtracted by 1).
+      Here, I find 5 inflow nodes (A,B,C,D,E) of TGSK and 1 inflow nodes of SZSK (upstream point) are removed in the new version. So the Time-Series plots are changed a little, i.e. the following pngs no longer exist:
+        accu_streamflow_ts_nodeTGSK-{A,B,C,D,E}.png
+        accu_streamflow_ts_nodeSK-SZu.png
+        TGSK_streamflow_3hr_allnodes_ts.png
+        TGSK_streamflow_contaccu_allnodes_ts.png
+
+       Hi Yubao, I removed the last two time-series pngs (TGSK_*.png).  The two old pngs were plots of TGSK 6 nodes time-series (one for 3hr accumulation, one for total accumulation from start of forecast).  As in the new version TGSK only has 1 channel node left (the outflow node), I guess it's not necessary to keep this two pngs. But if you want them back, just let me know.
+
+       Hi Wu,  for this changing of time-series plots, you may need to update the js_file as well. 
+
+These are what I updated. I haven't got time to add the atmospheric plots/profiles yet. That may take some longer time. I will try do that when I find some free time, probably next weekend. 
+Please let me know if something I describe here is not clear.

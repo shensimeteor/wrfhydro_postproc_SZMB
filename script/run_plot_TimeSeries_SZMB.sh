@@ -108,8 +108,13 @@ bash -c "$cmd"
 
 #Other Reservoir, HeDao, Jiedao (10 + 4 + 4)
 tspara=" 'data_outfile_prefix=\"$tsdir/Other_Accu_Streamflow_${cycle}\"' "
-list_nodename="SK-GF,SK-ML,SK-ZK,SK-GJ,SK-CY,SK-FT,SK-DJ,SK-SZd,SK-YT,HD-MZH,HD-GLH,HD-PSH,HD-LGH,JD-MLL,JD-JHL,JD-HTP,JD-SLQ"
-list_nodeidx="5831,8601,7221,7214,8105,6848,5246,5020,9450,7234,10845,11704,5167,8625,11881,8601,8071,10007,5128,5510,6429,9578"
+#yliu 20180305
+#list_nodename="SK-GF,SK-ML,SK-ZK,SK-GJ,SK-CY,SK-FT,SK-DJ,SK-SZd,SK-YT,HD-MZH,HD-GLH,HD-PSH,HD-LGH,JD-MLL,JD-JHL,JD-HTP,JD-SLQ"
+#list_nodeidx="5831,8601,7221,7214,8105,6848,5246,5020,9450,7234,10845,11704,5167,8625,11881,8601,8071,10007,5128,5510,6429,9578"
+list_nodename="SK-GF,SK-ML,SK-ZK,SK-GJ,SK-CY,SK-FT,SK-DJ,SK-DSP,SK-LX,HD-MZH,HD-GLH,HD-PSH,HD-LGH,JD-MLL,JD-JHL,JD-HTP,JD-SLQ,SK-CLP"
+#list_nodeidx= "6849,  5232, 4958, 9406, 7234,10725,11651,  7644, 7930, 11882,  8481,  8072, 10008,  5129,  5431,  6395,  9577,  5703, 8071,10007,5128,5510,6429,9578"
+list_nodeidx="6848,  5231, 4957, 9405, 7233,10724,11650,  7643, 7929, 11881,  8480,  8073, 10007,  5128,  5430,  6394,  9576,  5702, 8071,10007,5128,5510,6429,9578"
+#yliu 20180305
 cmd="ncl plot_nodes_accu_streamflow_ts.ncl 'nodes_idx_list=\"$list_nodeidx\"'  'accu_hour_list=\"1,3,6,12,24\"'  'color_list=\"blue,cyan,green,orange,red\"' 'file_pattern=\"*.CHRTOUT_DOMAIN1\"' 'nodes_name_list=\"$list_nodename\"' 'start_date10=\"$date_start\"' 'end_date10=\"$date_end\"' 'ymax=3500' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' 'cycle_date10=\"$cycle\"' $tspara "
 echo "$cmd"
 bash -c "$cmd"

@@ -76,6 +76,7 @@ for png in $(ls ../before_overlay/*.png); do
     test -e "$webdir/gifs/$datx/SZSK_Streamflow.png" && rm -rf "$webdir/gifs/$datx/SZSK_Streamflow.png"
     echo cp GE_${pngtitle}.png $webdir/gifs/$datx/SZSK_Streamflow.png
     cp GE_${pngtitle}.png $webdir/gifs/$datx/SZSK_Streamflow.png
+    cp inter.png $webdir/gifs/$datx/SZSK_Streamflow_White.png
     rm inter.png inter2.png
 done
 touch $workdir/finished.streamflow_SZSK
