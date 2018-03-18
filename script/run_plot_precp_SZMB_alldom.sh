@@ -1,5 +1,9 @@
 #!/bin/sh
+<<<<<<< HEAD
 #plot (2 dom + 7 subdom):  D4/SZ(d5),  TGSK/GLHU/LGHU/PSHU/MZHU/SZSK/SZFT
+=======
+#plot D4/SZ/TG/GL precp 
+>>>>>>> 65c70d25852190239e9e016a12df0a38a611cb68
 #arguments: hydro_root_dir/{ncl,data,cons}; cycle_dir(put all data there); work_dir; web_dir/{cycles,gifs}; cycle; begin hour plot (e.g. -6); plot_end_hour (e.g. 24)
 if [ $# -lt 7 ]; then
     echo "arguments: hydro_root_dir/{ncl,data,cons}; cycle_dir; work_dir; web_dir/{cycles,gifs}; cycle; plot_begin_hour; plot_end_hour"
@@ -69,10 +73,17 @@ bash -c "$cmd"
 #rm -rf *LDASIN_DOMAIN1
 date
 cd ..
+<<<<<<< HEAD
 #TGSK
 echo "TGSK"
 test -d TGSK || mkdir -p TGSK
 cd TGSK
+=======
+#TG
+echo "TG"
+test -d TG || mkdir -p TG
+cd TG
+>>>>>>> 65c70d25852190239e9e016a12df0a38a611cb68
 $1/script/cpln_hydrofile_here.sh ${cycledir}/forcing LDASIN_DOMAIN1 ln $cycle $plot_begin_hour $plot_end_hour
 ln -sf ${scriptdir}/plot_precprate_Customize.ncl
 ln -sf ${scriptdir}/gsn_add_shapefile_polylines_for_v600.ncl .
@@ -80,17 +91,29 @@ ln -sf ${scriptdir}/ncl_future_func.ncl .
 ln -sf ${scriptdir}/convert_and_copyout.ncl .
 ln -sf ${datadir}/SZDistrictSurface.nc .
 ln -sf ${datadir}/geo_em.nc .
+<<<<<<< HEAD
 ln -sf ${consdir}/TGSK*.txt .
 cmd="ncl 'srcfilename=\"*.LDASIN_DOMAIN1\"' 'dom_name=\"TGSK\"' 'lonlat_list=\"113.8289,113.9888,22.5847,22.7132\"' 'add_chan_border=\"TGSK\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' plot_precprate_Customize.ncl >& log.plot"
+=======
+ln -sf ${consdir}/TG*.txt .
+cmd="ncl 'srcfilename=\"*.LDASIN_DOMAIN1\"' 'dom_name=\"TG\"' 'lonlat_list=\"113.843,113.936,22.595,22.7\"' 'add_chan_border=\"TG\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' plot_precprate_Customize.ncl >& log.plot"
+>>>>>>> 65c70d25852190239e9e016a12df0a38a611cb68
 echo "$cmd"
 bash -c "$cmd"
 #rm -rf *LDASIN_DOMAIN1
 date
 cd ..
+<<<<<<< HEAD
 #GLHU
 echo "GLHU"
 test -d GLHU || mkdir -p GLHU
 cd GLHU
+=======
+#GL
+echo "GL"
+test -d GL || mkdir -p GL
+cd GL
+>>>>>>> 65c70d25852190239e9e016a12df0a38a611cb68
 $1/script/cpln_hydrofile_here.sh ${cycledir}/forcing LDASIN_DOMAIN1 ln $cycle $plot_begin_hour $plot_end_hour
 ln -sf ${scriptdir}/plot_precprate_Customize.ncl
 ln -sf ${scriptdir}/gsn_add_shapefile_polylines_for_v600.ncl .
@@ -104,10 +127,17 @@ echo "$cmd"
 bash -c "$cmd"
 cd ..
 #rm -rf *LDASIN_DOMAIN1
+<<<<<<< HEAD
 #LGHU
 echo "LGHU"
 test -d LGHU || mkdir -p LGHU
 cd LGHU
+=======
+#BAB
+echo "BAB"
+test -d BAB || mkdir -p BAB
+cd BAB
+>>>>>>> 65c70d25852190239e9e016a12df0a38a611cb68
 $1/script/cpln_hydrofile_here.sh ${cycledir}/forcing LDASIN_DOMAIN1 ln $cycle $plot_begin_hour $plot_end_hour
 ln -sf ${scriptdir}/plot_precprate_Customize.ncl
 ln -sf ${scriptdir}/gsn_add_shapefile_polylines_for_v600.ncl .
@@ -115,6 +145,7 @@ ln -sf ${scriptdir}/ncl_future_func.ncl .
 ln -sf ${scriptdir}/convert_and_copyout.ncl .
 ln -sf ${datadir}/SZDistrictSurface.nc .
 ln -sf ${datadir}/geo_em.nc .
+<<<<<<< HEAD
 ln -sf ${consdir}/LGHU*.txt .
 cmd="ncl 'srcfilename=\"*.LDASIN_DOMAIN1\"' 'dom_name=\"LGHU\"' 'lonlat_list=\"114.1710,114.3132,22.6744,22.8033\"' 'add_chan_border=\"LGHU\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' plot_precprate_Customize.ncl >& log.plot"
 echo "$cmd"
@@ -186,5 +217,12 @@ bash -c "$cmd"
 cd ..
 
 ##end
+=======
+ln -sf ${consdir}/BAB*.txt .
+cmd="ncl 'srcfilename=\"*.LDASIN_DOMAIN1\"' 'dom_name=\"BAB\"' 'lonlat_list=\"113.753,113.896,22.666,22.795\"' 'add_chan_border=\"BAB\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' plot_precprate_Customize.ncl >& log.plot"
+echo "$cmd"
+bash -c "$cmd"
+cd ..
+>>>>>>> 65c70d25852190239e9e016a12df0a38a611cb68
 touch $workdir/finished.precp
 date

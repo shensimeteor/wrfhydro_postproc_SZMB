@@ -1,5 +1,8 @@
 #!/bin/sh
+<<<<<<< HEAD
 #plot (2 dom + 7 subdom):  D4/SZ(d5),  TGSK/GLHU/LGHU/PSHU/MZHU/SZSK/SZFT
+=======
+>>>>>>> 65c70d25852190239e9e016a12df0a38a611cb68
 #arguments: hydro_root_dir/{ncl,data,cons}; cycle_dir(put all data there); work_dir; web_dir/{cycles,gifs}; cycle; begin hour plot (e.g. -6); plot_end_hour (e.g. 24)
 if [ $# -lt 7 ]; then
     echo "arguments: hydro_root_dir/{ncl,data,cons}; cycle_dir; work_dir; web_dir/{cycles,gifs}; cycle; plot_begin_hour; plot_end_hour"
@@ -38,8 +41,13 @@ cd ${workdir}
 echo "D4"
 test -d D4 || mkdir -p D4
 cd D4
+<<<<<<< HEAD
 echo $1/script/cpln_hydrofile_here.sh ${cycledir}/ LDASOUT_DOMAIN6 ln $cycle $plot_begin_hour $plot_end_hour
 $1/script/cpln_hydrofile_here.sh ${cycledir} LDASOUT_DOMAIN6 ln $cycle $plot_begin_hour $plot_end_hour
+=======
+echo $1/script/cpln_hydrofile_here.sh ${cycledir}/ LDASOUT_DOMAIN1 ln $cycle $plot_begin_hour $plot_end_hour
+$1/script/cpln_hydrofile_here.sh ${cycledir} LDASOUT_DOMAIN1 ln $cycle $plot_begin_hour $plot_end_hour
+>>>>>>> 65c70d25852190239e9e016a12df0a38a611cb68
 ln -sf ${scriptdir}/plot_evapor_Customize.ncl
 ln -sf ${scriptdir}/gsn_add_shapefile_polylines_for_v600.ncl .
 ln -sf $scriptdir/ncl_future_func.ncl .
@@ -56,8 +64,13 @@ cd ..
 echo "SZ"
 test -d SZ || mkdir -p SZ
 cd SZ
+<<<<<<< HEAD
 echo $1/script/cpln_hydrofile_here.sh ${cycledir}/ LDASOUT_DOMAIN6 ln $cycle $plot_begin_hour $plot_end_hour
 $1/script/cpln_hydrofile_here.sh ${cycledir} LDASOUT_DOMAIN6 ln $cycle $plot_begin_hour $plot_end_hour
+=======
+echo $1/script/cpln_hydrofile_here.sh ${cycledir}/ LDASOUT_DOMAIN1 ln $cycle $plot_begin_hour $plot_end_hour
+$1/script/cpln_hydrofile_here.sh ${cycledir} LDASOUT_DOMAIN1 ln $cycle $plot_begin_hour $plot_end_hour
+>>>>>>> 65c70d25852190239e9e016a12df0a38a611cb68
 ln -sf ${scriptdir}/plot_evapor_Customize.ncl
 ln -sf ${scriptdir}/gsn_add_shapefile_polylines_for_v600.ncl .
 ln -sf ${datadir}/SZDistrictSurface.nc .
@@ -70,12 +83,21 @@ bash -c "$cmd"
 #rm -rf *LDASOUT_DOMAIN1
 date
 cd ..
+<<<<<<< HEAD
 #TGSK
 echo TGSK
 test -d TGSK || mkdir -p TGSK
 cd TGSK
 echo $1/script/cpln_hydrofile_here.sh ${cycledir}/ LDASOUT_DOMAIN6 ln $cycle $plot_begin_hour $plot_end_hour
 $1/script/cpln_hydrofile_here.sh ${cycledir} LDASOUT_DOMAIN6 ln $cycle $plot_begin_hour $plot_end_hour
+=======
+#TG
+echo TG
+test -d TG || mkdir -p TG
+cd TG
+echo $1/script/cpln_hydrofile_here.sh ${cycledir}/ LDASOUT_DOMAIN1 ln $cycle $plot_begin_hour $plot_end_hour
+$1/script/cpln_hydrofile_here.sh ${cycledir} LDASOUT_DOMAIN1 ln $cycle $plot_begin_hour $plot_end_hour
+>>>>>>> 65c70d25852190239e9e016a12df0a38a611cb68
 ln -sf ${scriptdir}/plot_evapor_Customize.ncl
 ln -sf ${scriptdir}/gsn_add_shapefile_polylines_for_v600.ncl .
 ln -sf ${datadir}/SZDistrictSurface.nc .
@@ -83,11 +105,16 @@ ln -sf ${datadir}/geo_em.nc .
 ln -sf ${consdir}/TGSK*.txt .
 ln -sf $scriptdir/ncl_future_func.ncl .
 ln -sf $scriptdir/convert_and_copyout.ncl .
+<<<<<<< HEAD
 cmd="ncl 'srcfilename=\"*.LDASOUT_DOMAIN*\"' 'dom_name=\"TGSK\"' 'lonlat_list=\"113.8289,113.9888,22.5847,22.7132\"' 'add_chan_border=\"TGSK\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' plot_evapor_Customize.ncl >& log.plot"
+=======
+cmd="ncl 'srcfilename=\"*.LDASOUT_DOMAIN1\"' 'dom_name=\"TG\"' 'lonlat_list=\"113.843,113.936,22.595,22.7\"' 'add_chan_border=\"TG\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' plot_evapor_Customize.ncl >& log.plot"
+>>>>>>> 65c70d25852190239e9e016a12df0a38a611cb68
 echo "$cmd"
 bash -c "$cmd"
 date
 cd ..
+<<<<<<< HEAD
 #GLHU
 echo GLHU
 test -d GLHU || mkdir -p GLHU
@@ -128,6 +155,14 @@ test -d PSHU || mkdir -p PSHU
 cd PSHU
 echo $1/script/cpln_hydrofile_here.sh ${cycledir}/ LDASOUT_DOMAIN6 ln $cycle $plot_begin_hour $plot_end_hour
 $1/script/cpln_hydrofile_here.sh ${cycledir} LDASOUT_DOMAIN6 ln $cycle $plot_begin_hour $plot_end_hour
+=======
+#GL
+echo GL
+test -d GL || mkdir -p GL
+cd GL
+echo $1/script/cpln_hydrofile_here.sh ${cycledir}/ LDASOUT_DOMAIN1 ln $cycle $plot_begin_hour $plot_end_hour
+$1/script/cpln_hydrofile_here.sh ${cycledir} LDASOUT_DOMAIN1 ln $cycle $plot_begin_hour $plot_end_hour
+>>>>>>> 65c70d25852190239e9e016a12df0a38a611cb68
 ln -sf ${scriptdir}/plot_evapor_Customize.ncl
 ln -sf ${scriptdir}/gsn_add_shapefile_polylines_for_v600.ncl .
 ln -sf ${datadir}/SZDistrictSurface.nc .
@@ -139,16 +174,26 @@ cmd="ncl 'srcfilename=\"*.LDASOUT_DOMAIN*\"' 'dom_name=\"PSHU\"' 'lonlat_list=\"
 echo "$cmd"
 bash -c "$cmd"
 cd ..
+<<<<<<< HEAD
 #MZHU
 echo MZHU
 test -d MZHU || mkdir -p MZHU
 cd MZHU
 echo $1/script/cpln_hydrofile_here.sh ${cycledir}/ LDASOUT_DOMAIN6 ln $cycle $plot_begin_hour $plot_end_hour
 $1/script/cpln_hydrofile_here.sh ${cycledir} LDASOUT_DOMAIN6 ln $cycle $plot_begin_hour $plot_end_hour
+=======
+#BAB
+echo BAB
+test -d BAB || mkdir -p BAB
+cd BAB
+echo $1/script/cpln_hydrofile_here.sh ${cycledir}/ LDASOUT_DOMAIN1 ln $cycle $plot_begin_hour $plot_end_hour
+$1/script/cpln_hydrofile_here.sh ${cycledir} LDASOUT_DOMAIN1 ln $cycle $plot_begin_hour $plot_end_hour
+>>>>>>> 65c70d25852190239e9e016a12df0a38a611cb68
 ln -sf ${scriptdir}/plot_evapor_Customize.ncl
 ln -sf ${scriptdir}/gsn_add_shapefile_polylines_for_v600.ncl .
 ln -sf ${datadir}/SZDistrictSurface.nc .
 ln -sf ${datadir}/geo_em.nc .
+<<<<<<< HEAD
 ln -sf ${consdir}/MZHU*.txt .
 ln -sf $scriptdir/ncl_future_func.ncl .
 ln -sf $scriptdir/convert_and_copyout.ncl .
@@ -192,5 +237,14 @@ bash -c "$cmd"
 cd ..
 
 ##end
+=======
+ln -sf ${consdir}/BAB*.txt .
+ln -sf $scriptdir/ncl_future_func.ncl .
+ln -sf $scriptdir/convert_and_copyout.ncl .
+cmd="ncl 'srcfilename=\"*.LDASOUT_DOMAIN1\"' 'dom_name=\"BAB\"' 'lonlat_list=\"113.753,113.896,22.666,22.795\"' 'add_chan_border=\"BAB\"' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' plot_evapor_Customize.ncl >& log.plot"
+echo "$cmd"
+bash -c "$cmd"
+cd ..
+>>>>>>> 65c70d25852190239e9e016a12df0a38a611cb68
 touch $workdir/finished.evapor
 date

@@ -36,8 +36,12 @@ begin
 ;c. arr_dir_copyout is (/dir1, dir2, ../), in each dir, make a dir named date10(e.g. 2017102700), then cp figures to that date10
 ;   rename the figures respectively
     final_format="png"
+<<<<<<< HEAD
     convert="convert -alpha off -trim +repage -density 150"
 ;   convert="convert -alpha off -trim +repage -density 150 +antialias"
+=======
+    convert="convert -alpha off -trim +repage -density 150 "
+>>>>>>> 65c70d25852190239e9e016a12df0a38a611cb68
     strs=str_split(figure_name, ".")
     nstr=dimsizes(strs)
     file_exist=tointeger(systemfunc("ls "+figure_name+" >& /dev/null && echo 1 || echo 0"))

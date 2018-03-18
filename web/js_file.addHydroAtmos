@@ -1467,8 +1467,13 @@ fields.TG.v14_text = "Sfc Water Depth";
 fields.TG.v14_value = "SFCHEADSUBRT";
 fields.TG.v15_text = "Streamflow";
 fields.TG.v15_value = "Streamflow";
+<<<<<<< HEAD
 fields.TG.v16_text = "Soil Moist. Lev1";
 fields.TG.v16_value = "SOILM1";
+=======
+fields.TG.v16_text = "Soil Water Content";
+fields.TG.v16_value = "SoilMTotal";
+>>>>>>> 65c70d25852190239e9e016a12df0a38a611cb68
 fields.TG.v17_text = "Evap+Etran";
 fields.TG.v17_value = "Evapor";
 fields.TG.end_hydro_2d = 17;
@@ -1506,8 +1511,13 @@ fields.GL.v14_text = "Sfc Water Depth";
 fields.GL.v14_value = "SFCHEADSUBRT";
 fields.GL.v15_text = "Streamflow";
 fields.GL.v15_value = "Streamflow";
+<<<<<<< HEAD
 fields.GL.v16_text = "Soil Moist. Lev1";
 fields.GL.v16_value = "SOILM1";
+=======
+fields.GL.v16_text = "Soil Water Content";
+fields.GL.v16_value = "SoilMTotal";
+>>>>>>> 65c70d25852190239e9e016a12df0a38a611cb68
 fields.GL.v17_text = "Evap+Etran";
 fields.GL.v17_value = "Evapor";
 fields.GL.end_hydro_2d = 17;
@@ -1537,8 +1547,13 @@ fields.BAB.v14_text = "Sfc Water Depth";
 fields.BAB.v14_value = "SFCHEADSUBRT";
 fields.BAB.v15_text = "Streamflow";
 fields.BAB.v15_value = "Streamflow";
+<<<<<<< HEAD
 fields.BAB.v16_text = "Soil Moist. Lev1";
 fields.BAB.v16_value = "SOILM1";
+=======
+fields.BAB.v16_text = "Soil Water Content";
+fields.BAB.v16_value = "SoilMTotal";
+>>>>>>> 65c70d25852190239e9e016a12df0a38a611cb68
 fields.BAB.v17_text = "Evap+Etran";
 fields.BAB.v17_value = "Evapor";
 fields.BAB.end_hydro_2d = 17;
