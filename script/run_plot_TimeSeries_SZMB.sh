@@ -80,6 +80,7 @@ function cp_gifs(){
 this_dir=$(mydir $(pwd) $0)
 source $this_dir/datelib.sh
 ln -sf $cycledir/*.CHRTOUT_DOMAIN1 .
+ln -sf $cycledir/*.RTOUT_DOMAIN1 .
 ln -sf $scriptdir/*ncl .
 date_start=$(date_add $cycle $plot_begin_hour "hour")
 date_end=$(date_add $cycle $plot_end_hour "hour")
@@ -118,6 +119,32 @@ list_nodeidx="6848,  5231, 4957, 9405, 7233,10724,11650,  7643, 7929, 11881,  84
 cmd="ncl plot_nodes_accu_streamflow_ts.ncl 'nodes_idx_list=\"$list_nodeidx\"'  'accu_hour_list=\"1,3,6,12,24\"'  'color_list=\"blue,cyan,green,orange,red\"' 'file_pattern=\"*.CHRTOUT_DOMAIN1\"' 'nodes_name_list=\"$list_nodename\"' 'start_date10=\"$date_start\"' 'end_date10=\"$date_end\"' 'ymax=3500' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' 'cycle_date10=\"$cycle\"' $tspara "
 echo "$cmd"
 bash -c "$cmd"
+
+#Street Sites, Surface Head Time Series
+tspara=" 'data_outfile_prefix=\"$tsdir/Street_sfchead_${cycle}\"' "
+list_pt_lonlats="114.271882,22.7310595;114.043647,22.5669248;113.887382,22.5872116;113.836215,22.6302911"
+list_pt_titles="ShuangLongQiao,MeiLinLu,JinHuaLu,HuangTian PaiChuSuo"
+list_pt_names="SLQ,MLL,JHL,HTP"
+cmd="ncl plot_pts_localavg_sfchead_ts.ncl 'half_buffer=2' 'pt_lonlats_list=\"$list_pt_lonlats\"' 'pt_names_list=\"$list_pt_names\"' 'pt_titles_list=\"$list_pt_titles\"' 'file_pattern=\"*.RTOUT_DOMAIN1\"' 'start_date10=\"$date_start\"' 'end_date10=\"$date_end\"' 'ymax=1000' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' 'cycle_date10=\"$cycle\"' $tspara "
+echo "$cmd"
+bash -c "$cmd"
+
+#ShuiKu points, Surface Head Change (by 1/3/6/12/24 hours) Time Series
+tspara=" 'data_outfile_prefix=\"$tsdir/Shuiku_sfchead_change_${cycle}\"' "
+list_pt_lonlats="114.149240,22.5762646;113.950004,22.5998094;113.9041,22.702779;113.889308,22.6142398"
+list_pt_titles="ShenZhen SK,XiLi SK,ShiYan SK,TieGang SK"
+list_pt_names="SZSK,XLSK,SYSK,TGSK"
+cmd="ncl plot_pts_localavg_diff_sfchead_ts.ncl 'half_buffer=2' 'pt_lonlats_list=\"$list_pt_lonlats\"' 'pt_names_list=\"$list_pt_names\"' 'pt_titles_list=\"$list_pt_titles\"' 'file_pattern=\"*.RTOUT_DOMAIN1\"' 'start_date10=\"$date_start\"' 'end_date10=\"$date_end\"' 'ymax=1000' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' 'cycle_date10=\"$cycle\"' $tspara 'accu_hour_list=\"1,3,6,12,24\"'  'color_list=\"blue,cyan,green,orange,red\"'"
+echo "$cmd"
+bash -c "$cmd"
+
+#ShuiKu points, Surface Head Time Series, for test
+tspara=" 'data_outfile_prefix=\"$tsdir/Shuiku_sfchead_${cycle}\"' "
+cmd="ncl plot_pts_localavg_sfchead_ts.ncl 'half_buffer=2' 'pt_lonlats_list=\"$list_pt_lonlats\"' 'pt_names_list=\"$list_pt_names\"' 'pt_titles_list=\"$list_pt_titles\"' 'file_pattern=\"*.RTOUT_DOMAIN1\"' 'start_date10=\"$date_start\"' 'end_date10=\"$date_end\"' 'ymax=10000' 'copydir_list=\"$webdir/cycles/$cycle,$webdir/gifs\"' 'cycle_date10=\"$cycle\"' $tspara "
+echo "$cmd"
+bash -c "$cmd"
+
+
 
 cp_gifs $webdir/gifs $cycle 24
 

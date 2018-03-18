@@ -1,5 +1,24 @@
 ;; ncl library for WRF-Hydro ploting
 
+undef("any2d_lonlat_to_ij")
+;for any regular grid (lon,lat) (lon/lat are 2d-array), given scalar lonpt, latpt, find the nearest i,j
+; (i for x-dim, j for y-dim, lon(j,i) nearest to pt) by finding the nearest distance
+function any2d_lonlat_to_ij(lon2d: numeric, lat2d: numeric, lonpt: numeric, latpt:numeric)
+local lon1d, lon2d, dims, dis2, minidx, ij, idx
+begin
+    lon1d=ndtooned(lon2d)
+    lat1d=ndtooned(lat2d)
+    dims=dimsizes(lon2d)
+    dis2=(lon1d - lonpt)^2 + (lat1d - latpt)^2
+    minidx=minind(dis2)
+    idx=tointeger((/floor(minidx/dims(1)), mod(minidx, dims(1))/))
+    ;print((/"-- in any2d_lonlat_to_ij"/))
+    ;print((/lonpt, latpt, sqrt(min(dis2)), minidx/))
+    ;print((/idx/))
+    ;print((/lon2d(idx(0), idx(1)), lat2d(idx(0), idx(1))/))
+    ;print((/"out any2d_lonlat_to_ij"/))
+    return(idx)
+end
 ; ---------------------------------------------
 ; common utilities
 ; ---------------------------------------------
@@ -238,6 +257,110 @@ begin
     data2d@str_dt=str_dt10
     return(data2d)
 end ;}}}
+
+
+undef("read_point_sfchead")
+; return data2d(nfile, n_pt), in unit: mm, the average of [-half_buffer, +half_buffer] area centered at cenlons, cenlats
+; data2d@xs=xs of cenlons, ys= of cenlats
+function read_point_sfchead(files:string, cenlons: numeric, cenlats: numeric, half_buffer: numeric) ;{{{
+local data2d, nfile, npt, ifile, str_dt10, sfchead, f, fbasename, chartemp, pt_idx, pt_ise, pt_jse, lon2d, lat2d, dims, nx, ny, ipt, ij1, i1, j1, temp2d
+begin 
+    nfile=dimsizes(files)
+    npt=dimsizes(cenlons)
+    if(half_buffer .lt. 0) then
+        print((/"half_buffer should be >= 0, exit"/))
+        exit
+    end if
+    pt_idx=new((/npt,2/),"integer") ; ix,iy
+    pt_ise=new((/npt,2/), "integer") ; ix_start, ix_end
+    pt_jse=new((/npt,2/), "integer") ; iy_start, iy_end
+    data2d=new((/nfile, npt/), "float")
+    data2d=0
+    str_dt10=new((/nfile/), "string")
+
+    do ifile=0, nfile-1
+        f=addfile(files(ifile)+".nc", "r")
+        sfchead=f->sfcheadsubrt(0,:,:)
+        ;get some index information
+        if(ifile .eq. 0) then
+            lon2d=f->LONGITUDE
+            lat2d=f->LATITUDE
+            dims=dimsizes(lon2d)
+            ny=dims(0)
+            nx=dims(1)
+            do ipt=0, npt-1
+                ij1=any2d_lonlat_to_ij(lon2d, lat2d, cenlons(ipt), cenlats(ipt))
+                i1=ij1(1)
+                j1=ij1(0)
+                pt_idx(ipt,0)=i1
+                pt_idx(ipt,1)=j1
+                ;to set pt_ise, pt_jse
+                pt_ise(ipt,0)=i1-half_buffer
+                if(pt_ise(ipt,0) .lt. 0) then
+                    pt_ise(ipt,0)=0
+                end if
+                pt_ise(ipt,1)=i1+half_buffer
+                if(pt_ise(ipt,1) .ge. nx) then
+                    pt_ise(ipt,1)=nx-1
+                end if
+                pt_jse(ipt,0)=j1-half_buffer
+                if(pt_jse(ipt,0) .lt. 0) then
+                    pt_jse(ipt,0) = 0
+                end if
+                pt_jse(ipt,1)=j1+half_buffer
+                if(pt_jse(ipt,1) .ge. ny) then
+                    pt_jse(ipt,1) = ny-1
+                end if
+                ;test
+               ; print((/cenlons(ipt), cenlats(ipt)/))
+               ; print((/pt_idx(ipt,:)/))
+               ; print((/lon2d(pt_idx(ipt,1), pt_idx(ipt,0)), lat2d(pt_idx(ipt,1), pt_idx(ipt,0))/))
+               ; print((/pt_ise(ipt,:)/))
+               ; print((/pt_jse(ipt,:)/))
+            end do
+            data2d@xs=pt_idx(:,0)
+            data2d@ys=pt_idx(:,1)
+        end if
+        fbasename=basename(files(ifile))
+        chartemp=stringtochar(fbasename)
+        str_dt10(ifile)=chartostring(chartemp(0:9))
+        do ipt=0, npt-1
+            temp2d=sfchead(pt_jse(ipt,0):pt_jse(ipt,1), pt_ise(ipt,0):pt_ise(ipt,1)) 
+            data2d(ifile, ipt) = avg(temp2d)
+        end do
+    end do
+    data2d@str_dt=str_dt10
+    return(data2d)
+end ;}}}
+
+undef("read_point_sfchead_diff")
+;return data3d(nfile, npt, nhour), data3d@missing 
+function read_point_sfchead_diff(files:string, cenlons: numeric, cenlats: numeric, half_buffer: numeric, diff_hours:numeric) ;{{{
+local data2d, data3d
+begin
+    data2d=read_point_sfchead(files, cenlons, cenlats, half_buffer)
+    missing=-999.
+    nhour=dimsizes(diff_hours)
+    npt=dimsizes(cenlons)
+    nfile=dimsizes(files)
+    data3d=new((/nfile, npt, nhour/), "float")
+    do ifile=0,nfile-1
+        do ihour=0, nhour-1
+            hour=diff_hours(ihour)
+            if(ifile - hour  .lt. 0) then
+                data3d(ifile, :, ihour) = missing
+            else
+                data3d(ifile, :, ihour) = (data2d(ifile,:) - data2d(ifile-hour,:)) 
+            end if
+        end do
+    end do
+    data3d@missing_value=missing
+    data3d@_FillValue=missing
+    data3d@str_dt=data2d@str_dt
+    return (data3d)
+end ;}}}
+    
+
 
 undef("read_area_sum_sfchead_accu"); from sfchead, get accumulation, i.e. x(t,hour)= sfchead(t) - sfchead(t-hour)
 ;return data3d(nfile, n_area, nhour), in unit: 10^3 m3, data3d@str_dt, dx, dy, unit:m
@@ -503,10 +626,10 @@ begin
 end ;}}}
 
 ; ---------------------------------------------
-; on writing out data
+; on writing out data, csv format, for time-series output
 ; ---------------------------------------------
 undef("writeout_data")
-procedure writeout_data(str_dt: string, data2d: numeric, title_data2d: string, fileout: string)
+procedure writeout_data(str_dt: string, data2d: numeric, title_data2d: string, fileout: string) ;{{{
 local nvar, dims, ntime, strs, strx, it, ivar
 begin
     nvar=dimsizes(title_data2d)
@@ -534,6 +657,44 @@ begin
         strx(it) = str_join(strs(it,:), ",")
     end do
     asciiwrite(fileout, strx)
-end
+end  ;}}}
+
+; ---------------------------------------------
+; similar with writeout_data, but can add several lines(nline) in head (before titles)
+; ---------------------------------------------
+undef("writeout_data_withSupplementLines")
+procedure writeout_data_withSupplementLines(str_dt: string, data2d: numeric, title_data2d: string, fileout: string, lines:string) ;{{{
+local nvar, dims, ntime, strs, strx, it, ivar
+begin
+    nvar=dimsizes(title_data2d)
+    dims=dimsizes(data2d)
+    ntime=dimsizes(str_dt)
+    if(nvar .ne. dims(1)) then
+        print((/"Error in writeout_data, data2d & title_data2d size conflict"/))
+        exit
+    end if
+    if(ntime .ne. dims(0)) then
+        print((/"Error in writeout_data, data2d & str_dt10 size conflict"/))
+        exit
+    end if
+    nline=dimsizes(lines)
+    strs=new((/ntime+1, nvar+1/), "string")
+    strs(0, 0) = "datetime"
+    strs(0, 1:nvar)= title_data2d
+    do it=0,ntime-1
+        strs(it+1,0) = str_dt(it)
+        do ivar=0,nvar-1
+            strs(it+1, ivar+1) = ""+data2d(it,ivar)
+        end do
+    end do 
+    strx=new((/ntime+1+nline/), "string")
+    do it=0,nline-1
+        strx(it) = lines(it)
+    end do
+    do it=0,ntime
+        strx(it+nline) = str_join(strs(it,:), ",")
+    end do
+    asciiwrite(fileout, strx)
+end ;}}}
 
 

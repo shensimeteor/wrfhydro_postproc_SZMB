@@ -87,6 +87,8 @@ if ( -e "$workdir/cycledata/flag.copy") {
         $cycdir="$CYCLE_DIR/../$cyc";
         system("$HYDRO_ROOT/script/cpln_hydrofile_here.sh $cycdir CHRTOUT_DOMAIN1 ln $cyc -5 0");
         print("$HYDRO_ROOT/script/cpln_hydrofile_here.sh $cycdir CHRTOUT_DOMAIN1 ln $cyc -5 0 \n");
+        system("$HYDRO_ROOT/script/cpln_hydrofile_here.sh $cycdir RTOUT_DOMAIN1 ln $cyc -5 0");
+        print("$HYDRO_ROOT/script/cpln_hydrofile_here.sh $cycdir RTOUT_DOMAIN1 ln $cyc -5 0 \n");
     }
 }
 print("\n");
